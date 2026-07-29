@@ -2,15 +2,27 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0d0d1a" />
     <meta name="description" content="게임 포트폴리오 — 폴더를 열어 게임을 플레이하세요" />
     <title>Game Folder</title>
   </head>
   <body>
     <div id="desktop">
       <div id="icon-grid"></div>
+      <div id="start-menu" hidden></div>
       <div id="taskbar">
-        <div class="task-left"></div>
+        <div class="task-left">
+          <button id="start-btn" aria-label="시작" title="시작">
+            <svg viewBox="0 0 16 16" aria-hidden="true">
+              <rect x="0" y="0" width="7" height="7" rx="1" />
+              <rect x="9" y="0" width="7" height="7" rx="1" />
+              <rect x="0" y="9" width="7" height="7" rx="1" />
+              <rect x="9" y="9" width="7" height="7" rx="1" />
+            </svg>
+          </button>
+          <div id="task-windows"></div>
+        </div>
         <div class="task-clock" id="clock"></div>
       </div>
     </div>

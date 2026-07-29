@@ -1,75 +1,25 @@
 import './style.css';
-import { GAMES, type GameEntry } from './games.ts';
 
-const FOLDER_SVG = `
-<svg viewBox="0 0 64 52" class="folder-svg" aria-hidden="true">
-  <path d="M4 48 V10 q0-4 4-4 h16 l6 6 h26 q4 0 4 4 v32 z" fill="#cf9327"/>
-  <path d="M1 22 h62 l-6 24 q-1 4-5 4 H12 q-4 0-5-4 z" fill="#f2b94b"/>
-</svg>`;
+// 터치 기기 + 폰 크기 화면(또는 폰 UA)이면 폰 UI, 그 외에는 바탕화면 UI
+// ?ui=mobile / ?ui=desktop 으로 강제 전환 가능 (미리보기·디버그용)
+const forced = new URLSearchParams(location.search).get('ui');
+// 마우스가 주 입력인 터치 노트북은 coarse/hover 판정에서 걸러진다
+// (maxTouchPoints만 보면 터치 노트북까지 폰 UI가 되어버린다)
+const coarse = window.matchMedia('(pointer: coarse)').matches;
+const noHover = window.matchMedia('(hover: none)').matches;
+const touchFirst = coarse || noHover;
+const shortSide = Math.min(window.innerWidth, window.innerHeight);
+const phoneUA = /Android|iPhone|iPod/i.test(navigator.userAgent);
+const isMobile = forced ? forced === 'mobile' : touchFirst && (phoneUA || shortSide < 820);
 
-function renderIcons(): void {
-  const grid = document.getElementById('icon-grid')!;
-  grid.innerHTML = '';
-  for (const game of GAMES) {
-    const icon = document.createElement('button');
-    icon.className = 'desktop-icon';
-    icon.innerHTML = `${FOLDER_SVG}<span class="icon-label">${game.title}</span>`;
-    icon.addEventListener('dblclick', () => openWindow(game));
-    icon.addEventListener('click', () => icon.focus());
-    icon.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') openWindow(game);
-    });
-    grid.appendChild(icon);
-  }
+document.documentElement.classList.add(isMobile ? 'is-mobile' : 'is-desktop');
+// 태블릿·터치 모니터처럼 바탕화면 UI를 쓰는 터치 기기 → 탭 한 번으로 열기 + 큰 터치 영역
+if (touchFirst || navigator.maxTouchPoints > 0) {
+  document.documentElement.classList.add('is-touch');
 }
 
-function openWindow(game: GameEntry): void {
-  closeWindow();
-  const win = document.createElement('div');
-  win.className = 'explorer-window';
-  win.id = 'game-window';
-
-  const playable = game.playUrl.length > 0;
-  const playBtn = playable
-    ? `<a class="btn-play" href="${game.playUrl}">플레이</a>`
-    : `<span class="btn-play disabled">개발 중</span>`;
-
-  win.innerHTML = `
-    <div class="win-titlebar">
-      <span class="win-icon">${FOLDER_SVG}</span>
-      <span class="win-title">${game.title}</span>
-      <button class="win-close" aria-label="닫기">✕</button>
-    </div>
-    <div class="win-body">
-      <h1>${game.title}</h1>
-      <p class="tagline">${game.tagline} · ${game.year}</p>
-      <p class="desc">${game.description}</p>
-      <div class="win-actions">${playBtn}</div>
-    </div>`;
-
-  win.querySelector('.win-close')!.addEventListener('click', closeWindow);
-  document.getElementById('desktop')!.appendChild(win);
+if (isMobile) {
+  void import('./mobile.ts');
+} else {
+  void import('./desktop.ts');
 }
-
-function closeWindow(): void {
-  document.getElementById('game-window')?.remove();
-}
-
-function startClock(): void {
-  const el = document.getElementById('clock')!;
-  const tick = () => {
-    const now = new Date();
-    const hh = String(now.getHours()).padStart(2, '0');
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    el.textContent = `${hh}:${mm}`;
-  };
-  tick();
-  setInterval(tick, 10_000);
-}
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeWindow();
-});
-
-renderIcons();
-startClock();

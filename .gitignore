@@ -2,3 +2,8 @@ node_modules
 dist
 *.local
 .DS_Store
+
+# Local Netlify folder
+.netlify
+# netlify dev(Edge Functions 런타임)가 생성하는 로컬 아티팩트
+deno.lock

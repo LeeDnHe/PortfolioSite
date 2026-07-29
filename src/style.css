@@ -1,3 +1,55 @@
+/* =========================================================
+   화면 크기별 기준값 — JS(layout.ts)도 이 변수를 읽는다.
+   clamp()는 커스텀 속성으로 읽으면 계산 전 문자열이 나오므로
+   JS가 참조하는 값은 반드시 px 리터럴로 둔다.
+   ========================================================= */
+:root {
+  --taskbar-h: 40px;
+  --icon-w: 92px;
+  --icon-img: 56px;
+  --icon-font: 12px;
+  --icon-cell-w: 100px;
+  --icon-cell-h: 106px;
+  --ui-font: 13px;
+  --win-pad: 16px;
+}
+
+/* 작은 노트북 · 좁은 창 · 가로로 누운 폰 */
+@media (max-width: 720px), (max-height: 560px) {
+  :root {
+    --taskbar-h: 38px;
+    --icon-w: 76px;
+    --icon-img: 44px;
+    --icon-font: 11px;
+    --icon-cell-w: 82px;
+    --icon-cell-h: 86px;
+    --ui-font: 12px;
+    --win-pad: 10px;
+  }
+}
+
+/* 큰 모니터 — 아이콘·글자가 상대적으로 작아 보이지 않게 */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  :root {
+    --taskbar-h: 48px;
+    --icon-w: 112px;
+    --icon-img: 68px;
+    --icon-font: 14px;
+    --icon-cell-w: 122px;
+    --icon-cell-h: 130px;
+    --ui-font: 15px;
+    --win-pad: 24px;
+  }
+}
+
+/* 터치로 쓰는 바탕화면(태블릿·터치 모니터) — 손가락에 맞춘 크기 */
+html.is-touch {
+  --taskbar-h: 50px;
+  --icon-w: 96px;
+  --icon-cell-w: 106px;
+  --icon-cell-h: 118px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -8,30 +60,31 @@
 
 body {
   font-family: 'Segoe UI', 'Malgun Gothic', system-ui, sans-serif;
-  font-size: 13px;
+  font-size: var(--ui-font);
   overflow: hidden;
+  /* 더블탭 확대로 인한 클릭 지연 제거 — 탭 한 번이 바로 먹히도록 */
+  touch-action: manipulation;
 }
 
 #desktop {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* 모바일 주소창이 접혀도 바닥이 잘리지 않게 */
   background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d0d1a 100%);
 }
 
 /* --- 바탕화면 아이콘 --- */
 #icon-grid {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 8px;
-  padding: 24px;
-  height: calc(100vh - 40px);
+  position: absolute;
+  inset: 0 0 var(--taskbar-h) 0;
 }
 
 .desktop-icon {
-  width: 92px;
+  position: absolute;
+  width: var(--icon-w);
+  /* 드래그 중 브라우저 스크롤·확대가 끼어들지 않게 */
+  touch-action: none;
   padding: 10px 4px;
   background: transparent;
   border: 1px solid transparent;
@@ -47,20 +100,33 @@ body {
   background: rgba(76, 194, 255, 0.08);
 }
 
-.desktop-icon:focus {
+.desktop-icon:focus,
+.desktop-icon.selected {
   background: rgba(76, 194, 255, 0.15);
   border-color: rgba(76, 194, 255, 0.4);
   outline: none;
 }
 
-.folder-svg {
-  width: 52px;
-  height: 42px;
+.desktop-icon.dragging {
+  opacity: 0.6;
+}
+
+.select-box {
+  position: absolute;
+  border: 1px solid rgba(76, 194, 255, 0.7);
+  background: rgba(76, 194, 255, 0.18);
+  pointer-events: none;
+}
+
+.folder-icon {
+  width: var(--icon-img);
+  height: var(--icon-img);
+  object-fit: contain;
 }
 
 .icon-label {
   color: #ffffff;
-  font-size: 12px;
+  font-size: var(--icon-font);
   text-align: center;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   line-height: 1.3;
@@ -69,19 +135,22 @@ body {
 /* --- 게임 정보 창 --- */
 .explorer-window {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(480px, calc(100vw - 32px));
   background: #ffffff;
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  /* 어떤 화면에서도 창이 바탕화면을 넘지 않고, 넘치는 내용은 안에서 스크롤된다 */
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - var(--taskbar-h) - 16px);
+  display: flex;
+  flex-direction: column;
 }
 
 .win-titlebar {
+  flex-shrink: 0;
   height: 34px;
+  touch-action: none; /* 제목표시줄을 끌 때 화면이 딸려가지 않게 */
   background: #f3f3f3;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
@@ -90,9 +159,9 @@ body {
   padding: 0 6px 0 12px;
 }
 
-.win-icon .folder-svg {
+.win-title-icon {
   width: 18px;
-  height: 15px;
+  height: 18px;
   display: block;
 }
 
@@ -119,13 +188,27 @@ body {
 }
 
 .win-body {
-  padding: 24px 28px 28px;
+  padding: clamp(16px, 2.2vw, 28px);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .win-body h1 {
   font-size: 22px;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.platform-badge {
+  display: inline-block;
+  vertical-align: 3px;
+  margin-left: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #eaf3fb;
+  color: #0067c0;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .win-body .tagline {
@@ -165,22 +248,1542 @@ body {
   cursor: default;
 }
 
+/* --- 게임 속성 창 (일반/자세히/이전 버전 탭) --- */
+.props-tabs {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 10px 14px 0;
+  background: #f3f3f3;
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.props-tab {
+  position: relative;
+  top: 1px;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #555;
+  background: #ececec;
+  border: 1px solid #d9d9d9;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+}
+
+.props-tab:hover {
+  background: #f8f8f8;
+}
+
+.props-tab.active {
+  background: #ffffff;
+  color: #111;
+  font-weight: 600;
+}
+
+.props-body {
+  /* 탭마다 내용 길이가 달라도 창 크기는 고정 — 내용은 휠 스크롤 */
+  height: min(560px, 62vh);
+  /* 창이 화면보다 커지면 여기부터 줄어든다 */
+  min-height: 0;
+  flex: 0 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(14px, 2vw, 24px);
+}
+
+.props-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.props-head img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.props-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.props-sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #888;
+}
+
+.props-rows {
+  margin-top: 16px;
+  border-top: 1px solid #eeeeee;
+}
+
+.props-row {
+  display: flex;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.props-k {
+  flex-shrink: 0;
+  width: 84px;
+  font-size: 12px;
+  color: #777;
+}
+
+.props-v {
+  flex: 1;
+  font-size: 12.5px;
+  color: #333;
+}
+
+.props-section-title {
+  margin: 22px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0067c0;
+}
+
+.tab-panel > .props-section-title:first-child {
+  margin-top: 4px;
+}
+
+.award-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.award-list li {
+  font-size: 13px;
+  color: #333;
+  line-height: 1.8;
+}
+
+.detail-p {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.tab-empty {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 13px;
+  color: #999;
+}
+
+.dev-comment {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: #f8f8f8;
+  border: 1px solid #ececec;
+  border-radius: 6px;
+}
+
+.dev-comment .detail-p:first-child {
+  margin-top: 0;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 8px 18px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  color: #333;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  background: #f5f5f5;
+}
+
+.btn-link.youtube .yt-glyph {
+  color: #ff0000;
+  font-size: 11px;
+}
+
+/* 이전 버전 탭 — 패치노트 */
+.ver-entry {
+  padding: 14px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.ver-entry:first-child {
+  padding-top: 4px;
+}
+
+.ver-entry:last-child {
+  border-bottom: none;
+}
+
+.ver-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ver-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #eaf3fb;
+  color: #0067c0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ver-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.ver-current {
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: #e6f4e6;
+  color: #107c10;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.ver-date {
+  margin-left: auto;
+  font-size: 11px;
+  color: #999;
+}
+
+.ver-changes {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.ver-changes li {
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: #444;
+}
+
+/* --- 메모장 창 --- */
+.notepad-body {
+  font-family: Consolas, 'Malgun Gothic', monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  padding: clamp(14px, 2vw, 24px);
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #222;
+  max-height: min(60vh, calc(100dvh - var(--taskbar-h) - 70px));
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* --- 메시지 박스 --- */
+.msgbox-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 30000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.msgbox {
+  width: min(360px, calc(100vw - 32px));
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.msgbox-body {
+  padding: 20px 18px;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+}
+
+.msgbox-actions {
+  padding: 0 18px 16px;
+  text-align: right;
+}
+
+.btn-ok {
+  padding: 6px 24px;
+  border: 1px solid #0067c0;
+  background: #0067c0;
+  color: #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-ok:hover {
+  background: #0078d4;
+}
+
 /* --- 작업표시줄 --- */
 #taskbar {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: var(--taskbar-h);
   background: rgba(28, 28, 54, 0.9);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 16px 0 8px;
+}
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  min-width: 0;
+}
+
+#start-btn {
+  width: 44px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#start-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: #9a9ac0;
+}
+
+#start-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#start-btn:hover svg {
+  fill: #4cc2ff;
+}
+
+#task-windows {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.task-win-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  color: #cfd2ea;
+  font-size: 12px;
+  cursor: pointer;
+  max-width: 160px;
+}
+
+.task-win-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.task-win-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.task-win-btn img {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.task-win-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- 시작 메뉴 --- */
+#start-menu {
+  position: absolute;
+  left: 8px;
+  bottom: calc(var(--taskbar-h) + 8px);
+  width: min(280px, calc(100vw - 16px));
+  max-height: calc(100dvh - var(--taskbar-h) - 24px);
+  overflow-y: auto;
+  background: #22223f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 20000;
+}
+
+.menu-section {
+  font-size: 11px;
+  color: #8a8db5;
+  padding: 6px 10px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #e8e9f5;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.menu-item img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.menu-glyph {
+  width: 20px;
+  text-align: center;
+  color: #9a9ac0;
+  flex-shrink: 0;
+}
+
+.menu-sub {
+  margin-left: auto;
+  font-size: 11px;
+  color: #8a8db5;
+}
+
+.menu-sep {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 6px 4px;
 }
 
 .task-clock {
   color: #9a9ac0;
   font-size: 12px;
+}
+
+/* =========================================================
+   터치로 쓰는 바탕화면(태블릿·터치 모니터)
+   — 아이콘은 탭 한 번으로 열리고, 누르는 곳은 손가락 크기로
+   ========================================================= */
+
+html.is-touch .win-titlebar {
+  height: 44px;
+}
+
+html.is-touch .win-close {
+  width: 44px;
+  height: 38px;
+  font-size: 15px;
+}
+
+html.is-touch .win-title {
+  font-size: 13px;
+}
+
+html.is-touch .props-tab {
+  padding: 11px 18px;
+  font-size: 13px;
+}
+
+html.is-touch .win-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+html.is-touch .btn-play,
+html.is-touch .btn-link {
+  padding: 13px 26px;
+  font-size: 15px;
+}
+
+html.is-touch .btn-link {
+  margin-left: 0;
+}
+
+html.is-touch .btn-ok {
+  padding: 11px 28px;
+  font-size: 14px;
+}
+
+html.is-touch #start-btn {
+  width: 54px;
+  height: 40px;
+}
+
+html.is-touch .task-win-btn {
+  height: 40px;
+  font-size: 13px;
+}
+
+html.is-touch .menu-item {
+  padding: 13px 10px;
+  font-size: 14px;
+}
+
+html.is-touch .mg-quit {
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+html.is-touch .mg-btn {
+  padding: 11px 18px;
+  font-size: 14px;
+}
+
+/* 터치에서는 hover 잔상이 남으므로 눌림 표현만 남긴다 */
+html.is-touch .desktop-icon:hover {
+  background: transparent;
+}
+
+html.is-touch .desktop-icon:active {
+  background: rgba(76, 194, 255, 0.15);
+}
+
+/* ================= 모바일 — 폰 UI ================= */
+
+html.is-mobile body {
+  touch-action: manipulation;
+  overscroll-behavior: none;
+}
+
+html.is-mobile #desktop {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 상태바 --- */
+.m-statusbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 10px) 24px 4px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.m-status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.m-status-icons svg {
+  height: 11px;
+  width: auto;
+  fill: #ffffff;
+  color: #ffffff;
+  display: block;
+}
+
+/* --- 홈 화면 --- */
+.m-home {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px clamp(12px, 5vw, 28px) 12px;
+}
+
+.m-widget {
+  margin: clamp(6px, 2vh, 16px) 6px clamp(14px, 4vh, 32px);
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.m-widget-time {
+  font-size: clamp(34px, 14vw, 64px);
+  font-weight: 200;
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+.m-widget-date {
+  margin-top: 4px;
+  font-size: clamp(12px, 3.6vw, 16px);
+  opacity: 0.85;
+}
+
+.m-grid {
+  display: grid;
+  /* 좁은 폰은 4열, 화면이 넓어지면(큰 폰·가로 모드) 열이 자동으로 늘어난다 */
+  grid-template-columns: repeat(auto-fill, minmax(clamp(66px, 20vw, 86px), 1fr));
+  gap: clamp(14px, 3.5vh, 26px) 8px;
+  justify-items: center;
+}
+
+.m-app-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.m-tile {
+  width: clamp(48px, 15vw, 66px);
+  height: clamp(48px, 15vw, 66px);
+  border-radius: 26%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.m-app-btn:active .m-tile {
+  transform: scale(0.86);
+  filter: brightness(0.8);
+}
+
+.m-tile img {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+}
+
+.m-tile-github {
+  background: linear-gradient(160deg, #3a3f46 0%, #1b1f23 100%);
+}
+
+.m-tile-github svg {
+  width: 60%;
+  height: 60%;
+}
+
+.m-tile-mail {
+  background: linear-gradient(160deg, #4ca3ff 0%, #0b62d6 100%);
+}
+
+.m-tile-mail svg {
+  width: 55%;
+  height: 55%;
+}
+
+.m-app-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff;
+  font-size: clamp(10px, 3vw, 12px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* --- 독 --- */
+.m-dock {
+  flex-shrink: 0;
+  margin: 6px 14px calc(env(safe-area-inset-bottom) + 22px);
+  padding: 12px 8px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-items: center;
+}
+
+/* --- 홈 인디케이터 --- */
+.m-home-indicator {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom) + 5px);
+  width: 130px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 300;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.m-home-indicator::after {
+  content: '';
+  display: block;
+  margin: 0 auto;
+  width: 120px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.m-app-open .m-home-indicator::after {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- 전체화면 앱 페이지 --- */
+.m-app {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding-top: env(safe-area-inset-top);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0.25, 1);
+}
+
+.m-app.open {
+  transform: translateY(0);
+}
+
+.m-app-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 8px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.m-back {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  color: #0067c0;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.m-app-title {
+  flex: 1;
+  text-align: center;
+  margin-right: 44px; /* 뒤로가기 버튼 폭만큼 보정해 가운데 정렬 */
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-app-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 34px);
+}
+
+/* 앱 페이지 안에서는 속성 창 스타일을 전체화면에 맞게 조정 */
+html.is-mobile .m-app .props-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+html.is-mobile .m-app .props-body {
+  height: auto;
+  overflow: visible;
+  padding: 18px 18px 24px;
+}
+
+html.is-mobile .m-app .win-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+html.is-mobile .m-app .btn-play {
+  text-align: center;
+  padding: 13px;
+  font-size: 15px;
+}
+
+html.is-mobile .m-app .btn-link {
+  margin-left: 0;
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+}
+
+html.is-mobile .m-app .notepad-body {
+  max-height: none;
+}
+
+/* --- 가로로 눕혔거나 세로가 짧은 폰 — 위젯·독을 접어 앱 자리를 확보 --- */
+@media (orientation: landscape) and (max-height: 540px) {
+  html.is-mobile .m-statusbar {
+    padding-top: calc(env(safe-area-inset-top) + 4px);
+  }
+
+  html.is-mobile .m-widget {
+    margin: 4px 6px 10px;
+  }
+
+  html.is-mobile .m-widget-time {
+    font-size: clamp(26px, 9vh, 40px);
+  }
+
+  html.is-mobile .m-dock {
+    margin: 4px 14px calc(env(safe-area-inset-bottom) + 12px);
+    padding: 8px;
+    border-radius: 20px;
+  }
+
+  html.is-mobile .m-app-header {
+    height: 42px;
+  }
+}
+
+/* =========================================================
+   미니게임 — 게임 창을 닫으면 바탕화면 위에서 실행된다
+   ========================================================= */
+
+#minigame-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 60; /* 아이콘 위 · 창(100+)과 메뉴 아래 */
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* --- HUD --- */
+.mg-hud {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 150px); /* 종료 버튼과 겹치지 않는 범위 */
+  text-align: center;
+  color: #ffffff;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.mg-stats {
+  font-size: clamp(12px, 1.3vw, 17px);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.mg-quit {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  pointer-events: auto;
+  background: rgba(13, 13, 26, 0.7);
+  color: #dfe7ff;
+  border: 1px solid rgba(76, 194, 255, 0.45);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mg-quit:hover {
+  background: rgba(76, 194, 255, 0.25);
+}
+
+.mg-toast {
+  position: absolute;
+  left: 50%;
+  top: 32%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: #ffffff;
+  background: rgba(13, 13, 26, 0.78);
+  border: 1px solid rgba(76, 194, 255, 0.4);
+  padding: 10px 18px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: mg-toast-fade 3s forwards;
+}
+
+@keyframes mg-toast-fade {
+  0%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.mg-pop {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8fe388;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  animation: mg-pop-float 0.7s forwards;
+}
+
+.mg-pop.bad {
+  color: #ff6b6b;
+}
+
+.mg-pop.gold {
+  color: #ffe082;
+}
+
+@keyframes mg-pop-float {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-26px);
+  }
+}
+
+/* --- 게임 오버 패널 --- */
+.mg-over {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 10, 24, 0.92);
+  border: 1px solid rgba(76, 194, 255, 0.5);
+  border-radius: 8px;
+  padding: clamp(14px, 2vw, 22px) clamp(16px, 2.4vw, 30px);
+  /* 작은 화면에서도 랭킹까지 다 보이도록 — 넘치면 패널 안에서 스크롤 */
+  max-width: min(440px, calc(100vw - 24px));
+  max-height: calc(100dvh - var(--taskbar-h) - 24px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  text-align: center;
+  color: #ffffff;
+  pointer-events: auto;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+.mg-over-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.mg-over-line {
+  font-size: 13px;
+  margin: 3px 0;
+  color: #cfd8ff;
+}
+
+.new-best {
+  color: #ffd54f;
+  font-weight: 700;
+}
+
+.mg-over-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.mg-btn {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(76, 194, 255, 0.6);
+  background: rgba(76, 194, 255, 0.15);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.mg-btn:hover {
+  background: rgba(76, 194, 255, 0.3);
+}
+
+.mg-over-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+/* --- 떨어지는 오브젝트 공통 --- */
+.mg-fall {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  line-height: 1;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Folder Escape: 스틱맨 --- */
+.mg-stickman {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 51px;
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+}
+
+.mg-stickman svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mg-stickman line {
+  stroke: #f5f7ff;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+
+.mg-stickman .sm-body {
+  stroke-width: 2.1;
+}
+
+.mg-stickman .sm-head {
+  fill: #0d0d1a;
+  stroke: #f5f7ff;
+  stroke-width: 1.8;
+}
+
+.mg-stickman .sm-arm-l,
+.mg-stickman .sm-arm-r {
+  transform-origin: 10px 11px;
+  transform-box: view-box;
+}
+
+.mg-stickman .sm-leg-l,
+.mg-stickman .sm-leg-r {
+  transform-origin: 10px 20px;
+  transform-box: view-box;
+}
+
+.mg-stickman.face-left svg {
+  transform: scaleX(-1);
+}
+
+/* 낙하 중 — 만세 */
+.mg-stickman.dropping .sm-arm-l {
+  transform: rotate(55deg);
+}
+
+.mg-stickman.dropping .sm-arm-r {
+  transform: rotate(-55deg);
+}
+
+/* 달리기 — 팔다리 스윙 */
+.mg-stickman.moving .sm-leg-l {
+  animation: mg-swing 0.24s ease-in-out infinite;
+}
+
+.mg-stickman.moving .sm-leg-r {
+  animation: mg-swing 0.24s ease-in-out infinite;
+  animation-delay: -0.12s;
+}
+
+.mg-stickman.moving .sm-arm-l {
+  animation: mg-swing 0.24s ease-in-out infinite;
+  animation-delay: -0.12s;
+}
+
+.mg-stickman.moving .sm-arm-r {
+  animation: mg-swing 0.24s ease-in-out infinite;
+}
+
+@keyframes mg-swing {
+  0%,
+  100% {
+    transform: rotate(30deg);
+  }
+  50% {
+    transform: rotate(-30deg);
+  }
+}
+
+.mg-stickman.dead {
+  filter: drop-shadow(0 0 8px rgba(255, 82, 82, 0.8));
+}
+
+.mg-stickman.dead svg {
+  transform: rotate(96deg) translateY(-8px);
+  transition: transform 0.3s;
+}
+
+/* --- 컴퓨터 키우기: 과열 방지 --- */
+.mg-pc {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -54%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.mg-monitor {
+  background: #e8e0cf;
+  border-radius: 10px;
+  padding: 12px 12px 6px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.mg-screen {
+  width: clamp(148px, 22vw, 240px);
+  height: clamp(100px, 15vw, 160px);
+  background: #0a2a08;
+  border: 2px solid #555555;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: Consolas, 'Courier New', monospace;
+}
+
+.mg-temp {
+  font-size: clamp(30px, 4.4vw, 50px);
+  font-weight: 700;
+  color: #7cfc66;
+  font-variant-numeric: tabular-nums;
+}
+
+.mg-temp-label {
+  font-size: 11px;
+  color: #7cfc66;
+  opacity: 0.8;
+}
+
+.mg-screen.warn {
+  background: #2a2408;
+}
+
+.mg-screen.warn .mg-temp,
+.mg-screen.warn .mg-temp-label {
+  color: #ffd54f;
+}
+
+.mg-screen.danger {
+  background: #2a0808;
+  animation: mg-flicker 0.22s infinite;
+}
+
+.mg-screen.danger .mg-temp,
+.mg-screen.danger .mg-temp-label {
+  color: #ff5252;
+}
+
+@keyframes mg-flicker {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.45);
+  }
+}
+
+.mg-monitor-foot {
+  width: 70px;
+  height: 9px;
+  background: #cfc6b2;
+  margin: 6px auto 0;
+  border-radius: 0 0 6px 6px;
+}
+
+.mg-heatbar {
+  width: clamp(172px, 26vw, 268px);
+  max-width: calc(100vw - 32px);
+  height: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.mg-heatbar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #66bb6a, #ffee58, #ef5350);
+}
+
+.mg-fanbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #22223a;
+  border: 1px solid #44446a;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #cfd8ff;
+  font-size: 12px;
+}
+
+.mg-fan {
+  width: 34px;
+  height: 34px;
+}
+
+.mg-pc.shake {
+  animation: mg-shake 0.16s infinite;
+}
+
+@keyframes mg-shake {
+  0%,
+  100% {
+    transform: translate(-50%, -54%) rotate(-0.6deg);
+  }
+  50% {
+    transform: translate(calc(-50% + 2px), -54%) rotate(0.7deg);
+  }
+}
+
+/* 블루스크린 */
+.mg-bsod {
+  position: fixed;
+  inset: 0;
+  z-index: 40000;
+  background: #0067b8;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.mg-bsod-inner {
+  max-width: min(600px, 100vw);
+  max-height: 100dvh;
+  overflow-y: auto;
+  padding: clamp(12px, 3vh, 24px) clamp(16px, 4vw, 28px);
+}
+
+.mg-bsod-sad {
+  font-size: clamp(52px, 9vw, 96px);
+  margin-bottom: clamp(8px, 2vh, 18px);
+}
+
+.mg-bsod p {
+  font-size: 15px;
+  margin: 6px 0;
+}
+
+.mg-bsod .mg-bsod-small {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.mg-bsod .mg-over-actions {
+  justify-content: flex-start;
+  margin-top: 22px;
+}
+
+.mg-bsod .mg-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.mg-bsod .mg-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Floppy-144: 1.44MB 받아내기 --- */
+.mg-floppy {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: max-content; /* 실제 크기는 화면 배율에 맞춰 JS가 정한다 */
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.mg-floppy img {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+
+.mg-floppy.dead {
+  filter: drop-shadow(0 0 8px rgba(255, 82, 82, 0.8)) grayscale(0.6);
+}
+
+.mg-file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.mg-file .mg-file-icon {
+  font-size: 30px;
+}
+
+.mg-file .mg-kb {
+  font-size: 10px;
+  font-weight: 700;
+  color: #e3f2fd;
+  background: rgba(13, 13, 26, 0.75);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mg-file.zip .mg-kb {
+  color: #ffe082;
+}
+
+.mg-capbar {
+  width: min(240px, calc(100vw - 60px));
+  height: 7px;
+  margin: 6px auto 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mg-capbar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4cc2ff, #ffee58, #ef5350);
+}
+
+/* --- 전체 랭킹 보드 --- */
+.mg-lb {
+  margin-top: 14px;
+  border-top: 1px solid rgba(76, 194, 255, 0.25);
+  padding-top: 10px;
+  min-width: min(260px, 100%);
+}
+
+.mg-lb-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #9fd0ff;
+}
+
+.mg-lb-status,
+.mg-lb-empty {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.mg-lb-list {
+  text-align: left;
+  font-size: 12.5px;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.mg-lb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.mg-lb-row .r {
+  width: 24px;
+  color: #8a8db5;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.mg-lb-row .n {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mg-lb-row .s {
+  font-variant-numeric: tabular-nums;
+  color: #cfd8ff;
+  flex-shrink: 0;
+}
+
+.mg-lb-row.me {
+  background: rgba(255, 213, 79, 0.16);
+}
+
+.mg-lb-row.me .n,
+.mg-lb-row.me .s {
+  color: #ffd54f;
+  font-weight: 700;
+}
+
+.mg-lb-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.mg-lb-form input {
+  flex: 1;
+  min-width: 0;
+  max-width: 180px;
+  background: #11112a;
+  border: 1px solid rgba(76, 194, 255, 0.4);
+  border-radius: 4px;
+  color: #ffffff;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.mg-lb-form input:focus {
+  outline: none;
+  border-color: rgba(76, 194, 255, 0.9);
+}
+
+.mg-lb-msg {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9fd0ff;
+}
+
+/* 블루스크린 안에서의 랭킹 보드 */
+.mg-bsod .mg-lb {
+  border-top-color: rgba(255, 255, 255, 0.3);
+}
+
+.mg-bsod .mg-lb-title,
+.mg-bsod .mg-lb-msg {
+  color: #ffffff;
+}
+
+.mg-bsod .mg-lb-row .r,
+.mg-bsod .mg-lb-row .s {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.mg-bsod .mg-lb-row.me {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mg-bsod .mg-lb-row.me .n,
+.mg-bsod .mg-lb-row.me .s {
+  color: #ffe082;
+}
+
+.mg-bsod .mg-lb-form input {
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- 터치 조작 (모바일 · 터치 데스크톱) --- */
+.mg-touch {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--taskbar-h) + 44px);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 clamp(12px, 3vw, 32px);
+  pointer-events: none;
+}
+
+.mg-touch-btn {
+  pointer-events: auto;
+  width: clamp(56px, 13vmin, 84px);
+  height: clamp(56px, 13vmin, 84px);
+  border-radius: 50%;
+  border: 1px solid rgba(76, 194, 255, 0.5);
+  background: rgba(13, 13, 26, 0.55);
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mg-touch-btn:active {
+  background: rgba(76, 194, 255, 0.35);
+}
+
+/* --- 모바일(폰 셸) 배치 보정 --- */
+html.is-mobile .mg-hud {
+  top: 52px;
+  max-width: 94vw;
+}
+
+html.is-mobile .mg-stats {
+  font-size: 12.5px;
+  white-space: normal;
+}
+
+html.is-mobile .mg-quit {
+  top: 26px;
+  right: 12px;
+}
+
+html.is-mobile .mg-toast {
+  white-space: normal;
+  width: max-content;
+  max-width: 86vw;
+  text-align: center;
+}
+
+html.is-mobile .mg-over {
+  max-width: 92vw;
+  padding: 18px 16px;
+}
+
+html.is-mobile .mg-pc {
+  transform: translate(-50%, -58%) scale(0.9);
 }
