@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 미니게임 중 표시되는 "디스크가 빠져나간" 빈 아이콘 — 점선 실루엣만 남는다 -->
+  <rect width="108" height="108" rx="22" fill="#4A7BD0"/>
+  <rect x="0" y="0" width="108" height="14" rx="22" fill="#FFFFFF" opacity="0.08"/>
+  <rect x="0" y="94" width="108" height="14" fill="#2A1810" opacity="0.10"/>
+  <ellipse cx="54" cy="90" rx="28" ry="2.8" fill="#2A1810" opacity="0.18"/>
+  <path d="M 27 18 H 72 L 82 28 V 82 A 5 5 0 0 1 77 87 H 27 A 5 5 0 0 1 22 82 V 23 A 5 5 0 0 1 27 18 Z" fill="#2A1810" opacity="0.12"/>
+  <path d="M 27 18 H 72 L 82 28 V 82 A 5 5 0 0 1 77 87 H 27 A 5 5 0 0 1 22 82 V 23 A 5 5 0 0 1 27 18 Z" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="2.4" stroke-dasharray="5 4"/>
+</svg>

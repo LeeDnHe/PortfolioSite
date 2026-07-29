@@ -70,12 +70,12 @@ function openAppPage(opts: { id: string; title: string; bodyHtml: string; onCrea
     page.dataset.app = opts.id;
     page.innerHTML = `
       <header class="m-app-header">
-        <button class="m-back" aria-label="뒤로">‹</button>
         <span class="m-app-title">${opts.title}</span>
+        <button class="m-close" aria-label="닫기">✕</button>
       </header>
       <div class="m-app-body">${opts.bodyHtml}</div>`;
     appsEl.appendChild(page);
-    page.querySelector('.m-back')!.addEventListener('click', () => closeAppPage(page!));
+    page.querySelector('.m-close')!.addEventListener('click', () => closeAppPage(page!));
     attachEdgeSwipeBack(page);
     opts.onCreate?.(page);
   }
@@ -162,20 +162,13 @@ interface MobileApp {
   open: () => void;
 }
 
-const GRID_APPS: MobileApp[] = [
-  ...GAMES.map((g) => ({
-    id: g.id,
-    label: g.title,
-    tileHtml: `<span class="m-tile"><img src="${g.icon}" alt=""></span>`,
-    open: () => openGameApp(g),
-  })),
-  {
-    id: 'readme',
-    label: 'README.txt',
-    tileHtml: `<span class="m-tile"><img src="${notepadIcon}" alt=""></span>`,
-    open: openReadmeApp,
-  },
-];
+// README는 하단 독에 있으므로 홈 그리드에는 게임만 둔다
+const GRID_APPS: MobileApp[] = GAMES.map((g) => ({
+  id: g.id,
+  label: g.title,
+  tileHtml: `<span class="m-tile"><img src="${g.icon}" alt=""></span>`,
+  open: () => openGameApp(g),
+}));
 
 const DOCK_APPS: MobileApp[] = [
   {

@@ -11,7 +11,7 @@
     {
       "name": "netlify",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["netlify", "dev"],
+      "runtimeArgs": ["netlify", "dev", "--offline"],
       "port": 8888
     }
   ]

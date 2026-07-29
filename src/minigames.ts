@@ -1,4 +1,5 @@
-import floppyIcon from './floppy-144-icon.svg';
+import folderPlainIcon from './file-escape-icon-plain.svg';
+import floppyEmptyIcon from './floppy-144-icon-empty.svg';
 import { taskbarH, uiScale } from './layout.ts';
 
 /* =========================================================
@@ -26,6 +27,8 @@ export function startMinigame(id: string): boolean {
   stopMinigame();
   // 아이콘 버튼에 포커스가 남아 있으면 스페이스/엔터가 창을 다시 열어버린다
   (document.activeElement as HTMLElement | null)?.blur?.();
+  // 모바일에서 게임 중 하단 독을 잠시 비활성화하는 데 쓰는 상태 클래스
+  document.body.classList.add('minigame-active');
   const layer = document.createElement('div');
   layer.id = 'minigame-layer';
   document.getElementById('desktop')!.appendChild(layer);
@@ -43,6 +46,7 @@ export function stopMinigame(): boolean {
   active.stop();
   active = null;
   document.getElementById('minigame-layer')?.remove();
+  document.body.classList.remove('minigame-active');
   return true;
 }
 
@@ -88,7 +92,8 @@ function runLoop(update: (dt: number) => void, signal: AbortSignal): void {
   let raf = 0;
   let last = performance.now();
   const frame = (now: number) => {
-    const dt = Math.min((now - last) / 1000, 0.05);
+    // 탭 복귀 등으로 시간이 튀어도 한 프레임은 0~50ms로 제한
+    const dt = Math.min(Math.max((now - last) / 1000, 0), 0.05);
     last = now;
     update(dt);
     raf = requestAnimationFrame(frame);
@@ -107,9 +112,11 @@ function isMobileUi(): boolean {
   return document.documentElement.classList.contains('is-mobile');
 }
 
-/** 터치 조작이 필요한 환경인가 — 판정은 main.ts가 붙인 클래스를 단일 기준으로 삼는다 */
-function isTouchUi(): boolean {
-  return isMobileUi() || document.documentElement.classList.contains('is-touch');
+type Platform = 'pc' | 'mobile';
+
+/** 랭킹 분류용 플랫폼 — 폰 셸이면 mobile, 그 외 pc */
+function currentPlatform(): Platform {
+  return isMobileUi() ? 'mobile' : 'pc';
 }
 
 /** 게임 바닥 y — 데스크톱은 작업표시줄 위, 모바일은 홈 인디케이터 위 */
@@ -122,6 +129,24 @@ function gameIconRect(id: string): DOMRect | undefined {
   return document
     .querySelector(`.desktop-icon[data-id="${id}"], .m-app-btn[data-id="${id}"]`)
     ?.getBoundingClientRect();
+}
+
+/** 해당 게임의 바탕화면/홈 아이콘 <img> */
+function gameIconImg(id: string): HTMLImageElement | null {
+  return document.querySelector<HTMLImageElement>(
+    `.desktop-icon[data-id="${id}"] img, .m-app-btn[data-id="${id}"] img`,
+  );
+}
+
+/** 미니게임 동안 아이콘 이미지를 바꿔 두고, 게임이 끝나면 되돌린다 */
+function swapGameIcon(id: string, src: string, signal: AbortSignal): void {
+  const img = gameIconImg(id);
+  if (!img) return;
+  const orig = img.src;
+  img.src = src;
+  signal.addEventListener('abort', () => {
+    img.src = orig;
+  });
 }
 
 /** ←→(A/D) 키보드 + 터치 환경이면 화면 좌우 ◀▶ 버튼. dir(): -1 | 0 | 1 */
@@ -156,7 +181,7 @@ function trackHorizontal(layer: HTMLElement, signal: AbortSignal): { dir: () => 
   window.addEventListener('blur', () => held.clear(), { signal });
 
   let touchDir = 0;
-  if (isTouchUi()) {
+  if (isMobileUi()) {
     const pad = document.createElement('div');
     pad.className = 'mg-touch';
     const makeBtn = (label: string, d: number) => {
@@ -190,7 +215,7 @@ function buildHud(layer: HTMLElement, quit: () => void): { stats: HTMLElement; h
 
   const quitBtn = document.createElement('button');
   quitBtn.className = 'mg-quit';
-  quitBtn.textContent = isTouchUi() ? '✕ 미니게임 종료' : '✕ 미니게임 종료 (ESC)';
+  quitBtn.textContent = isMobileUi() ? '✕ 미니게임 종료' : '✕ 미니게임 종료 (ESC)';
   quitBtn.addEventListener('click', quit);
   layer.appendChild(quitBtn);
 
@@ -257,32 +282,48 @@ interface LbSubmitResult {
   top: LbEntry[];
 }
 
-async function fetchTop(game: string): Promise<LbEntry[]> {
-  const res = await fetch(`${LB_API}?game=${encodeURIComponent(game)}`);
+async function fetchTop(game: string, platform: Platform): Promise<LbEntry[]> {
+  const res = await fetch(`${LB_API}?game=${encodeURIComponent(game)}&platform=${platform}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return ((await res.json()) as { top: LbEntry[] }).top;
 }
 
-async function submitScore(game: string, name: string, score: number): Promise<LbSubmitResult> {
+async function submitScore(
+  game: string,
+  platform: Platform,
+  name: string,
+  score: number,
+): Promise<LbSubmitResult> {
   const res = await fetch(LB_API, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ game, name, score }),
+    body: JSON.stringify({ game, platform, name, score }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return (await res.json()) as LbSubmitResult;
 }
 
-/** 게임 오버 화면에 붙는 TOP 10 랭킹 보드 + 닉네임 등록 폼 */
+/** 게임 오버 화면에 붙는 TOP 10 랭킹 보드 — PC/모바일 탭 + 닉네임 등록 폼.
+    기록은 지금 플레이한 기기의 순위표에 올라가고, 기본 탭도 그쪽이다 */
 function buildLeaderboardBlock(game: string, score: number): HTMLElement {
+  const myPlat = currentPlatform();
   const box = document.createElement('div');
   box.className = 'mg-lb';
   box.innerHTML = `
     <div class="mg-lb-title">🏆 전체 랭킹 TOP 10</div>
+    <div class="mg-lb-tabs" role="tablist">
+      <button class="mg-lb-tab" data-plat="pc" role="tab">PC 순위</button>
+      <button class="mg-lb-tab" data-plat="mobile" role="tab">모바일 순위</button>
+    </div>
     <div class="mg-lb-body"><span class="mg-lb-status">불러오는 중…</span></div>`;
   const body = box.querySelector<HTMLElement>('.mg-lb-body')!;
+  const tabs = [...box.querySelectorAll<HTMLElement>('.mg-lb-tab')];
 
-  const renderList = (top: LbEntry[], mine?: string) => {
+  let viewPlat: Platform = myPlat;
+  let myName: string | undefined; // 등록한 닉네임 (내 플랫폼 탭에서만 하이라이트)
+  const cache: Partial<Record<Platform, LbEntry[]>> = {};
+
+  const renderList = (top: LbEntry[]) => {
     body.replaceChildren();
     if (top.length === 0) {
       const empty = document.createElement('div');
@@ -296,7 +337,9 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
     top.forEach((e, i) => {
       const row = document.createElement('div');
       row.className = 'mg-lb-row';
-      if (mine && e.name.toLowerCase() === mine.toLowerCase()) row.classList.add('me');
+      if (viewPlat === myPlat && myName && e.name.toLowerCase() === myName.toLowerCase()) {
+        row.classList.add('me');
+      }
       const r = document.createElement('span');
       r.className = 'r';
       r.textContent = MEDALS[i] ?? `${i + 1}.`;
@@ -311,6 +354,29 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
     });
     body.appendChild(ol);
   };
+
+  const setTab = (plat: Platform) => {
+    viewPlat = plat;
+    tabs.forEach((tb) => tb.classList.toggle('active', tb.dataset.plat === plat));
+    const cached = cache[plat];
+    if (cached) {
+      renderList(cached);
+      return;
+    }
+    body.innerHTML = '<span class="mg-lb-status">불러오는 중…</span>';
+    fetchTop(game, plat)
+      .then((top) => {
+        cache[plat] = top;
+        if (viewPlat === plat) renderList(top);
+      })
+      .catch(() => {
+        if (viewPlat === plat) {
+          body.innerHTML =
+            '<span class="mg-lb-status">랭킹 서버에 연결할 수 없어요 (로컬 실행 중이거나 오프라인)</span>';
+        }
+      });
+  };
+  tabs.forEach((tb) => tb.addEventListener('click', () => setTab(tb.dataset.plat as Platform)));
 
   const showMsg = (text: string) => {
     box.querySelector('.mg-lb-msg')?.remove();
@@ -343,8 +409,10 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
       btn.textContent = '등록 중…';
       try {
         localStorage.setItem(NICK_KEY, name);
-        const result = await submitScore(game, name, score);
-        renderList(result.top, name);
+        const result = await submitScore(game, myPlat, name, score);
+        myName = name;
+        cache[myPlat] = result.top;
+        setTab(myPlat); // 등록은 항상 내 기기 순위표로 — 그 탭을 보여준다
         form.remove();
         if (!result.improved) showMsg(`"${name}"의 더 좋은 기록이 이미 ${result.rank}위에 있어요`);
         else if (result.rank && result.rank <= 10) showMsg(`${result.rank}위에 등록됐어요!`);
@@ -363,13 +431,17 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
     });
   };
 
-  fetchTop(game)
+  // 첫 로드: 내 기기 탭. 서버가 응답해야 등록 폼을 보여준다
+  tabs.forEach((tb) => tb.classList.toggle('active', tb.dataset.plat === myPlat));
+  fetchTop(game, myPlat)
     .then((top) => {
-      renderList(top);
+      cache[myPlat] = top;
+      if (viewPlat === myPlat) renderList(top);
       showForm();
     })
     .catch(() => {
-      body.innerHTML = '<span class="mg-lb-status">랭킹 서버에 연결할 수 없어요 (로컬 실행 중이거나 오프라인)</span>';
+      body.innerHTML =
+        '<span class="mg-lb-status">랭킹 서버에 연결할 수 없어요 (로컬 실행 중이거나 오프라인)</span>';
     });
 
   return box;
@@ -421,6 +493,9 @@ const folderEscapeGame: MinigameFactory = (layer, api) => {
   player.style.height = `${PH}px`;
   layer.appendChild(player);
 
+  // 스틱맨이 탈출했으니 아이콘은 일반 폴더가 된다 (종료 시 복귀)
+  swapGameIcon('folder-escape', folderPlainIcon, sig);
+
   // 자기 게임 아이콘 속에서 떨어져 나온다
   const iconRect = gameIconRect('folder-escape');
   let px = iconRect ? iconRect.left + iconRect.width / 2 - PW / 2 : window.innerWidth / 2;
@@ -434,7 +509,7 @@ const folderEscapeGame: MinigameFactory = (layer, api) => {
 
   showToast(
     layer,
-    `${isTouchUi() ? '◀ ▶ 버튼으로' : '← → 로'} 이동 · 쏟아지는 아이콘을 피하세요!`,
+    `${isMobileUi() ? '◀ ▶ 버튼으로' : '← → 로'} 이동 · 쏟아지는 아이콘을 피하세요!`,
   );
 
   const spawn = () => {
@@ -576,11 +651,42 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
   const fill = pc.querySelector<HTMLElement>('.mg-heatbar-fill')!;
   const rotor = pc.querySelector<SVGGElement>('.mg-fan-rotor')!;
 
+  // 온도에 따라 바탕화면 아이콘 속 컴퓨터도 같이 달아오른다
+  const iconImg = gameIconImg('computer-idle');
+  sig.addEventListener('abort', () => {
+    if (iconImg) {
+      iconImg.style.filter = '';
+      iconImg.classList.remove('mg-icon-hot');
+    }
+  });
+
   let heat = 30;
   let t = 0;
   let fanVel = 0;
   let fanRot = 0;
   let over = false;
+
+  const boomAt = (x: number, y: number) => {
+    const boom = document.createElement('div');
+    boom.className = 'mg-boom';
+    boom.textContent = '💥';
+    boom.style.left = `${x}px`;
+    boom.style.top = `${y}px`;
+    layer.appendChild(boom);
+  };
+
+  const explode = () => {
+    if (iconImg) {
+      iconImg.classList.remove('mg-icon-hot');
+      iconImg.style.filter = 'grayscale(1) brightness(0.4)';
+      const r = iconImg.getBoundingClientRect();
+      boomAt(r.left + r.width / 2, r.top + r.height / 2);
+    }
+    const pr = screen.getBoundingClientRect();
+    boomAt(pr.left + pr.width / 2, pr.top + pr.height / 2);
+    screen.classList.remove('warn', 'danger');
+    screen.classList.add('burst');
+  };
 
   const cool = () => {
     if (over) return;
@@ -650,12 +756,22 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
     screen.classList.toggle('warn', heat > 50 && heat <= 78);
     screen.classList.toggle('danger', heat > 78);
     pc.classList.toggle('shake', heat > 86);
+    if (iconImg) {
+      const h = clamp(heat, 0, 100) / 100;
+      iconImg.style.filter =
+        `sepia(${(h * 0.85).toFixed(2)}) saturate(${(1 + h * 2.5).toFixed(2)}) ` +
+        `hue-rotate(${Math.round(-42 * h)}deg) brightness(${(1 + h * 0.2).toFixed(2)})`;
+      iconImg.classList.toggle('mg-icon-hot', heat > 80);
+    }
     stats.textContent = `⏱ 가동 ${fmtSec(t)}${best0 ? ` · 최고 ${fmtSec(best0)}` : ''}`;
 
     if (heat >= 100) {
       over = true;
       pc.classList.remove('shake');
-      showBsod();
+      explode();
+      // 터지는 걸 보여준 뒤 블루스크린
+      const timer = setTimeout(showBsod, 900);
+      sig.addEventListener('abort', () => clearTimeout(timer));
     }
   }, sig);
 
@@ -673,6 +789,18 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
 const FLOPPY_CAP = 1440;
 const FLOPPY_TIME = 120; // 제한시간 (초)
 const FILE_ICONS = ['📄', '🖼️', '🎵', '📊', '🎞️'];
+
+/** 아이콘 속에 들어 있던 그 디스크 — 아이콘 SVG에서 디스크 부분만 떼어 온 것 */
+const FLOPPY_DISK_SVG = `
+  <svg viewBox="19 15 66 75" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 27 18 H 72 L 82 28 V 82 A 5 5 0 0 1 77 87 H 27 A 5 5 0 0 1 22 82 V 23 A 5 5 0 0 1 27 18 Z" fill="#F4E4BC" stroke="#2A1810" stroke-width="3.2"/>
+    <rect x="37" y="18" width="29" height="21" fill="#C8CDD6" stroke="#2A1810" stroke-width="3"/>
+    <rect x="52" y="22" width="9" height="13" rx="1.5" fill="#F4E4BC" stroke="#2A1810" stroke-width="2.4"/>
+    <rect x="30" y="48" width="44" height="33" rx="3" fill="#FFFFFF" stroke="#2A1810" stroke-width="3"/>
+    <text x="52" y="63" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="12.5" fill="#FF6B35">1.44MB</text>
+    <line x1="35" y1="70" x2="69" y2="70" stroke="#2A1810" stroke-width="2" opacity="0.35"/>
+    <line x1="35" y1="76" x2="61" y2="76" stroke="#2A1810" stroke-width="2" opacity="0.35"/>
+  </svg>`;
 
 interface FallingFile {
   el: HTMLElement;
@@ -700,17 +828,26 @@ const floppyGame: MinigameFactory = (layer, api) => {
 
   const S = uiScale();
   const FW = Math.round(56 * S);
+  const FH = Math.round(FW * 1.14); // 디스크 비율 (66x75)
   const player = document.createElement('div');
   player.className = 'mg-floppy';
-  player.innerHTML = `<img src="${floppyIcon}" alt="" style="width:${FW}px;height:${FW}px">`;
+  player.innerHTML = FLOPPY_DISK_SVG;
+  player.style.width = `${FW}px`;
+  player.style.height = `${FH}px`;
   layer.appendChild(player);
+
+  // 디스크가 빠져나갔으니 아이콘은 빈 슬롯이 된다 (종료 시 복귀)
+  swapGameIcon('floppy-144', floppyEmptyIcon, sig);
 
   const iconRect = gameIconRect('floppy-144');
   let px = iconRect
     ? clamp(iconRect.left + iconRect.width / 2 - FW / 2, 2, window.innerWidth - FW - 2)
     : window.innerWidth / 2 - FW / 2;
+  // 아이콘에서 디스크가 떨어져 내려온다
+  let py = iconRect ? iconRect.top + 4 : -FH;
+  let vyDrop = 0;
 
-  let phase: 'play' | 'over' = 'play';
+  let phase: 'drop' | 'play' | 'over' = 'drop';
   let t = 0;
   let used = 0; // 디스크에 실제로 차지하는 (압축 후) 용량
   let total = 0; // 담은 파일들의 압축 해제 기준 전체 용량 = 점수
@@ -774,9 +911,17 @@ const floppyGame: MinigameFactory = (layer, api) => {
   runLoop((dt) => {
     const W = window.innerWidth;
     const ground = groundY();
-    const fy = ground - FW - 2; // 플로피 상단
+    const fy = ground - FH - 2; // 디스크 상단
 
-    if (phase === 'play') {
+    if (phase === 'drop') {
+      vyDrop += 2200 * dt;
+      py += vyDrop * dt;
+      if (py >= fy) {
+        py = fy;
+        phase = 'play';
+      }
+    } else if (phase === 'play') {
+      py = fy;
       t += dt;
       if (t >= FLOPPY_TIME) {
         renderStats();
@@ -807,7 +952,7 @@ const floppyGame: MinigameFactory = (layer, api) => {
       if (phase === 'play') {
         const bottom = f.y + f.h;
         const overlap = Math.abs(f.x + f.w / 2 - (px + FW / 2)) < FW * 0.75;
-        if (bottom >= fy + FW * 0.25 && bottom <= fy + FW * 0.8 && overlap) {
+        if (bottom >= fy + FH * 0.2 && bottom <= fy + FH * 0.7 && overlap) {
           // 받았다!
           if (f.zip) {
             if (used > 0) {
@@ -845,7 +990,7 @@ const floppyGame: MinigameFactory = (layer, api) => {
       }
     }
 
-    player.style.transform = `translate(${px}px, ${fy}px)`;
+    player.style.transform = `translate(${px}px, ${py}px)`;
   }, sig);
 
   return () => ac.abort();

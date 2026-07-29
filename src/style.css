@@ -984,13 +984,13 @@ body.m-app-open .m-home-indicator::after {
   border-bottom: 1px solid #e8e8e8;
 }
 
-.m-back {
+.m-close {
   width: 44px;
   height: 44px;
   border: none;
   background: none;
-  color: #0067c0;
-  font-size: 30px;
+  color: #666;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -999,7 +999,7 @@ body.m-app-open .m-home-indicator::after {
 .m-app-title {
   flex: 1;
   text-align: center;
-  margin-right: 44px; /* 뒤로가기 버튼 폭만큼 보정해 가운데 정렬 */
+  margin-left: 44px; /* 오른쪽 닫기 버튼 폭만큼 보정해 가운데 정렬 */
   font-size: 15px;
   font-weight: 600;
   color: #222;
@@ -1260,7 +1260,7 @@ html.is-mobile .m-app .notepad-body {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* --- Folder Escape: 스틱맨 --- */
+/* --- Folder Escape: 스틱맨 (원작 게임과 같은 모습 — 어두운 배경 대비용 흰 광택만 추가) --- */
 .mg-stickman {
   position: absolute;
   left: 0;
@@ -1269,7 +1269,8 @@ html.is-mobile .m-app .notepad-body {
   height: 51px;
   will-change: transform;
   pointer-events: none;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.9))
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
 .mg-stickman svg {
@@ -1279,7 +1280,7 @@ html.is-mobile .m-app .notepad-body {
 }
 
 .mg-stickman line {
-  stroke: #f5f7ff;
+  stroke: #222222;
   stroke-width: 1.9;
   stroke-linecap: round;
 }
@@ -1289,8 +1290,8 @@ html.is-mobile .m-app .notepad-body {
 }
 
 .mg-stickman .sm-head {
-  fill: #0d0d1a;
-  stroke: #f5f7ff;
+  fill: #ffffff;
+  stroke: #222222;
   stroke-width: 1.8;
 }
 
@@ -1488,6 +1489,61 @@ html.is-mobile .m-app .notepad-body {
   }
 }
 
+/* 과열 중 아이콘 흔들림 */
+.mg-icon-hot {
+  animation: mg-icon-shake 0.12s infinite;
+}
+
+@keyframes mg-icon-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-1px, 1px);
+  }
+  75% {
+    transform: translate(1px, -1px);
+  }
+}
+
+/* 폭발 이펙트 */
+.mg-boom {
+  position: absolute;
+  font-size: 46px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.3);
+  animation: mg-boom 0.75s forwards;
+  z-index: 10;
+}
+
+@keyframes mg-boom {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* 터진 뒤 꺼진 화면 */
+.mg-screen.burst {
+  background: #050505;
+  animation: none;
+}
+
+.mg-screen.burst .mg-temp,
+.mg-screen.burst .mg-temp-label {
+  color: #333333;
+}
+
 /* 블루스크린 */
 .mg-bsod {
   position: fixed;
@@ -1538,20 +1594,20 @@ html.is-mobile .m-app .notepad-body {
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* --- Floppy-144: 1.44MB 받아내기 --- */
+/* --- Floppy-144: 1.44MB 받아내기 (아이콘 속 디스크가 그대로 나온다) --- */
 .mg-floppy {
   position: absolute;
   left: 0;
   top: 0;
-  width: max-content; /* 실제 크기는 화면 배율에 맞춰 JS가 정한다 */
+  /* 실제 크기는 화면 배율에 맞춰 JS가 정한다 */
   will-change: transform;
   pointer-events: none;
   filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
 
-.mg-floppy img {
-  width: 56px;
-  height: 56px;
+.mg-floppy svg {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -1612,6 +1668,30 @@ html.is-mobile .m-app .notepad-body {
   font-weight: 700;
   margin-bottom: 6px;
   color: #9fd0ff;
+}
+
+.mg-lb-tabs {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.mg-lb-tab {
+  font: inherit;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid rgba(76, 194, 255, 0.35);
+  background: transparent;
+  color: #9fb3d8;
+  cursor: pointer;
+}
+
+.mg-lb-tab.active {
+  background: rgba(76, 194, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(76, 194, 255, 0.7);
 }
 
 .mg-lb-status,
@@ -1725,6 +1805,17 @@ html.is-mobile .m-app .notepad-body {
   border-color: rgba(255, 255, 255, 0.6);
 }
 
+.mg-bsod .mg-lb-tab {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.mg-bsod .mg-lb-tab.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
 /* --- 터치 조작 (모바일 · 터치 데스크톱) --- */
 .mg-touch {
   position: absolute;
@@ -1786,4 +1877,11 @@ html.is-mobile .mg-over {
 
 html.is-mobile .mg-pc {
   transform: translate(-50%, -58%) scale(0.9);
+}
+
+/* 미니게임 중에는 하단 독을 잠시 비활성화해 오조작을 막는다 */
+html.is-mobile body.minigame-active .m-dock {
+  pointer-events: none;
+  opacity: 0.35;
+  transition: opacity 0.25s;
 }
