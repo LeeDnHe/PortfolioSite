@@ -281,6 +281,9 @@ const GRID_PAD = 16;
  * 실제로 그려진 크기를 따라가 겹치지 않게 한다.
  */
 function arrangeDefault(icons: HTMLElement[]): void {
+  // 바탕화면 높이를 아직 못 재는 시점(스타일·이미지가 앉기 전)에 배치하면
+  // 줄 수가 1로 접혀 아이콘이 가로로 늘어선다 — 크기가 잡힐 때까지 미룬다
+  if (gridEl.clientHeight === 0) return;
   const cell = iconCell();
   const w = Math.max(cell.w, ...icons.map((i) => i.offsetWidth + 8));
   const h = Math.max(cell.h, ...icons.map((i) => i.offsetHeight + 6));
@@ -293,6 +296,10 @@ function arrangeDefault(icons: HTMLElement[]): void {
 
 /** 사용자가 직접 옮긴 적 없는 아이콘 — 화면이 바뀌면 다시 격자로 정렬한다 */
 const autoPlaced: HTMLElement[] = [];
+
+function arrangeAuto(): void {
+  if (autoPlaced.length) arrangeDefault(autoPlaced);
+}
 
 function renderIcons(): void {
   const positions = loadPositions();
@@ -319,7 +326,12 @@ function renderIcons(): void {
     gridEl.appendChild(icon);
   });
   // 실제 렌더 크기를 재야 하므로 모두 붙인 뒤에 배치한다
-  if (autoPlaced.length) arrangeDefault(autoPlaced);
+  arrangeAuto();
+  // 첫 배치는 아이콘 이미지·폰트가 앉기 전에 재면 줄 수가 틀어진다 —
+  // 크기가 확정되는 시점마다 다시 줄을 세워 첫 화면부터 격자가 맞게 한다
+  requestAnimationFrame(arrangeAuto);
+  window.addEventListener('load', arrangeAuto, { once: true });
+  void document.fonts?.ready.then(arrangeAuto);
 }
 
 function makeIconDraggable(icon: HTMLElement, item: DesktopItem): void {
@@ -529,13 +541,15 @@ function initResponsiveLayout(): void {
     // 주소창이 접히거나 화면을 돌릴 때 연속으로 들어오는 resize를 한 번으로 모은다
     timer = window.setTimeout(() => {
       // 자동 배치된 아이콘은 새 화면 비율에 맞춰 다시 줄을 세운다
-      if (autoPlaced.length) arrangeDefault(autoPlaced);
+      arrangeAuto();
       keepIconsInView();
       keepWindowsInView();
     }, 120);
   };
   window.addEventListener('resize', onResize);
   window.addEventListener('orientationchange', onResize);
+  // resize 이벤트 없이 바탕화면 크기가 잡히는 경우(첫 렌더·주소창 접힘)도 잡는다
+  if ('ResizeObserver' in window) new ResizeObserver(onResize).observe(gridEl);
 }
 
 renderIcons();
