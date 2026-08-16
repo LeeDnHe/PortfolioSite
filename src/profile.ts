@@ -1,10 +1,13 @@
+import { s, type L } from './i18n.ts';
+
 export const PROFILE = {
   name: 'LeeDnHe',
   github: 'https://github.com/LeeDnHe',
   email: 'dlgotn1005@gmail.com',
 };
 
-export const README_TEXT = `게임 개발자 이동희입니다.
+const README: L = {
+  ko: `게임 개발자 이동희입니다.
 
 이미 존재하는 게임들의 스타일 보단
 익숙함을 비틀어 게임의 로직으로 만드는 것을 좋아합니다.
@@ -19,4 +22,24 @@ export const README_TEXT = `게임 개발자 이동희입니다.
   · GitHub  github.com/LeeDnHe
   · Email   ${PROFILE.email}
 
-이 사이트도 하나의 작은 게임처럼 즐겨주세요 :)`;
+이 사이트도 하나의 작은 게임처럼 즐겨주세요 :)`,
+
+  en: `I'm Donghee Lee, a game developer.
+
+Rather than following the style of games that already exist,
+I like twisting the familiar until it becomes game logic.
+
+What I'm working on
+  · Folder Escape — a file explorer puzzle game (PC)
+  · Boot Tycoon — an idle tycoon game (Mobile)
+  · Floppy-144 — a 1.44MB size-limited action roguelite (PC - in development)
+  · Folder Memory — a meta-twist narrative game (PC - in design)
+
+Contact
+  · GitHub  github.com/LeeDnHe
+  · Email   ${PROFILE.email}
+
+Please enjoy this site as a small game of its own :)`,
+};
+
+export const README_TEXT = s(README);

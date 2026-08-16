@@ -2,6 +2,7 @@ import { GAMES, type GameEntry } from './games.ts';
 import { PROFILE, README_TEXT } from './profile.ts';
 import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame } from './minigames.ts';
+import { TX, createLangSwitcher } from './i18n.ts';
 import notepadIcon from './notepad-icon.svg';
 
 /* ================= 폰 셸 ================= */
@@ -44,7 +45,7 @@ const root = document.getElementById('desktop')!;
 root.innerHTML = `
   <div class="m-statusbar">
     <span id="m-status-clock"></span>
-    <div class="m-status-icons">${SIGNAL_SVG}${WIFI_SVG}${BATTERY_SVG}</div>
+    <div class="m-status-icons"><span id="m-lang-slot"></span>${SIGNAL_SVG}${WIFI_SVG}${BATTERY_SVG}</div>
   </div>
   <div class="m-home">
     <div class="m-widget">
@@ -55,7 +56,10 @@ root.innerHTML = `
   </div>
   <div class="m-dock" id="m-dock"></div>
   <div id="m-apps"></div>
-  <button class="m-home-indicator" id="m-home-indicator" aria-label="홈으로"></button>`;
+  <button class="m-home-indicator" id="m-home-indicator" aria-label="${TX.mHome}"></button>`;
+
+// 상태바 오른쪽 — 신호·와이파이 아이콘 옆의 언어 표시기
+document.getElementById('m-lang-slot')!.replaceWith(createLangSwitcher());
 
 /* ================= 앱 페이지 (전체화면) ================= */
 
@@ -71,7 +75,7 @@ function openAppPage(opts: { id: string; title: string; bodyHtml: string; onCrea
     page.innerHTML = `
       <header class="m-app-header">
         <span class="m-app-title">${opts.title}</span>
-        <button class="m-close" aria-label="닫기">✕</button>
+        <button class="m-close" aria-label="${TX.close}">✕</button>
       </header>
       <div class="m-app-body">${opts.bodyHtml}</div>`;
     appsEl.appendChild(page);
@@ -173,7 +177,7 @@ const GRID_APPS: MobileApp[] = GAMES.map((g) => ({
 const DOCK_APPS: MobileApp[] = [
   {
     id: 'dock-readme',
-    label: '소개',
+    label: TX.mAbout,
     tileHtml: `<span class="m-tile"><img src="${notepadIcon}" alt=""></span>`,
     open: openReadmeApp,
   },
@@ -185,7 +189,7 @@ const DOCK_APPS: MobileApp[] = [
   },
   {
     id: 'mail',
-    label: '메일',
+    label: TX.mMail,
     tileHtml: `<span class="m-tile m-tile-mail">${MAIL_SVG}</span>`,
     open: () => {
       location.href = `mailto:${PROFILE.email}`;
@@ -229,14 +233,13 @@ function startClock(): void {
   const statusClock = document.getElementById('m-status-clock')!;
   const widgetTime = document.getElementById('m-widget-time')!;
   const widgetDate = document.getElementById('m-widget-date')!;
-  const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
   const tick = () => {
     const now = new Date();
     const hh = String(now.getHours()).padStart(2, '0');
     const mm = String(now.getMinutes()).padStart(2, '0');
     statusClock.textContent = `${hh}:${mm}`;
     widgetTime.textContent = `${hh}:${mm}`;
-    widgetDate.textContent = `${now.getMonth() + 1}월 ${now.getDate()}일 ${DAYS[now.getDay()]}요일`;
+    widgetDate.textContent = TX.mDate(now);
   };
   tick();
   setInterval(tick, 10_000);

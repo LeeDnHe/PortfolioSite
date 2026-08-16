@@ -1,6 +1,7 @@
 import folderPlainIcon from './file-escape-icon-plain.svg';
 import floppyEmptyIcon from './floppy-144-icon-empty.svg';
 import { taskbarH, uiScale } from './layout.ts';
+import { TX } from './i18n.ts';
 
 /* =========================================================
    미니게임 — 게임 속성 창을 닫으면 시작되고,
@@ -53,11 +54,7 @@ export function stopMinigame(): boolean {
 /* ================= 공통 유틸 ================= */
 
 function fmtSec(sec: number): string {
-  if (sec >= 60) {
-    const m = Math.floor(sec / 60);
-    return `${m}분 ${(sec - m * 60).toFixed(1)}초`;
-  }
-  return `${sec.toFixed(1)}초`;
+  return TX.dur(sec);
 }
 
 function fmtKb(kb: number): string {
@@ -215,7 +212,7 @@ function buildHud(layer: HTMLElement, quit: () => void): { stats: HTMLElement; h
 
   const quitBtn = document.createElement('button');
   quitBtn.className = 'mg-quit';
-  quitBtn.textContent = isMobileUi() ? '✕ 미니게임 종료' : '✕ 미니게임 종료 (ESC)';
+  quitBtn.textContent = isMobileUi() ? TX.mgQuit : TX.mgQuitEsc;
   quitBtn.addEventListener('click', quit);
   layer.appendChild(quitBtn);
 
@@ -249,12 +246,12 @@ function showOverPanel(
   panel.innerHTML = `
     <div class="mg-over-title">${opts.title}</div>
     ${opts.lines.map((l) => `<div class="mg-over-line">${l}</div>`).join('')}
-    ${opts.newBest ? '<div class="mg-over-line new-best">🏆 신기록!</div>' : ''}
+    ${opts.newBest ? `<div class="mg-over-line new-best">${TX.mgNewBest}</div>` : ''}
     <div class="mg-over-actions">
-      <button class="mg-btn primary">다시 시작</button>
-      <button class="mg-btn quit">종료</button>
+      <button class="mg-btn primary">${TX.mgRestart}</button>
+      <button class="mg-btn quit">${TX.mgQuitBtn}</button>
     </div>
-    <div class="mg-over-hint">아이콘을 다시 열었다 닫아도 처음부터 시작됩니다</div>`;
+    <div class="mg-over-hint">${TX.mgOverHint}</div>`;
   panel.querySelector('.primary')!.addEventListener('click', api.restart);
   panel.querySelector('.quit')!.addEventListener('click', api.quit);
   panel.insertBefore(
@@ -310,12 +307,12 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
   const box = document.createElement('div');
   box.className = 'mg-lb';
   box.innerHTML = `
-    <div class="mg-lb-title">🏆 전체 랭킹 TOP 10</div>
+    <div class="mg-lb-title">${TX.lbTitle}</div>
     <div class="mg-lb-tabs" role="tablist">
-      <button class="mg-lb-tab" data-plat="pc" role="tab">PC 순위</button>
-      <button class="mg-lb-tab" data-plat="mobile" role="tab">모바일 순위</button>
+      <button class="mg-lb-tab" data-plat="pc" role="tab">${TX.lbTabPc}</button>
+      <button class="mg-lb-tab" data-plat="mobile" role="tab">${TX.lbTabMobile}</button>
     </div>
-    <div class="mg-lb-body"><span class="mg-lb-status">불러오는 중…</span></div>`;
+    <div class="mg-lb-body"><span class="mg-lb-status">${TX.lbLoading}</span></div>`;
   const body = box.querySelector<HTMLElement>('.mg-lb-body')!;
   const tabs = [...box.querySelectorAll<HTMLElement>('.mg-lb-tab')];
 
@@ -328,7 +325,7 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
     if (top.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'mg-lb-empty';
-      empty.textContent = '아직 기록이 없어요. 1위의 주인공이 되어 보세요!';
+      empty.textContent = TX.lbEmpty;
       body.appendChild(empty);
       return;
     }
@@ -363,7 +360,7 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
       renderList(cached);
       return;
     }
-    body.innerHTML = '<span class="mg-lb-status">불러오는 중…</span>';
+    body.innerHTML = `<span class="mg-lb-status">${TX.lbLoading}</span>`;
     fetchTop(game, plat)
       .then((top) => {
         cache[plat] = top;
@@ -371,8 +368,7 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
       })
       .catch(() => {
         if (viewPlat === plat) {
-          body.innerHTML =
-            '<span class="mg-lb-status">랭킹 서버에 연결할 수 없어요 (로컬 실행 중이거나 오프라인)</span>';
+          body.innerHTML = `<span class="mg-lb-status">${TX.lbOffline}</span>`;
         }
       });
   };
@@ -391,11 +387,11 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
     form.className = 'mg-lb-form';
     const input = document.createElement('input');
     input.maxLength = 12;
-    input.placeholder = '닉네임 (최대 12자)';
+    input.placeholder = TX.lbNick;
     input.value = localStorage.getItem(NICK_KEY) ?? '';
     const btn = document.createElement('button');
     btn.className = 'mg-btn';
-    btn.textContent = '기록 등록';
+    btn.textContent = TX.lbSubmit;
     form.append(input, btn);
     box.appendChild(form);
 
@@ -406,7 +402,7 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
         return;
       }
       btn.disabled = true;
-      btn.textContent = '등록 중…';
+      btn.textContent = TX.lbSubmitting;
       try {
         localStorage.setItem(NICK_KEY, name);
         const result = await submitScore(game, myPlat, name, score);
@@ -414,14 +410,14 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
         cache[myPlat] = result.top;
         setTab(myPlat); // 등록은 항상 내 기기 순위표로 — 그 탭을 보여준다
         form.remove();
-        if (!result.improved) showMsg(`"${name}"의 더 좋은 기록이 이미 ${result.rank}위에 있어요`);
-        else if (result.rank && result.rank <= 10) showMsg(`${result.rank}위에 등록됐어요!`);
-        else if (result.rank) showMsg(`아깝다! ${result.rank}위 — TOP 10까지 조금 남았어요`);
-        else showMsg('등록했지만 순위권 밖이에요. 다음 판에 다시 도전!');
+        if (!result.improved) showMsg(TX.lbAlready(name, result.rank));
+        else if (result.rank && result.rank <= 10) showMsg(TX.lbRanked(result.rank));
+        else if (result.rank) showMsg(TX.lbClose(result.rank));
+        else showMsg(TX.lbOutOfRank);
       } catch {
         btn.disabled = false;
-        btn.textContent = '기록 등록';
-        showMsg('등록에 실패했어요. 잠시 후 다시 시도해 주세요');
+        btn.textContent = TX.lbSubmit;
+        showMsg(TX.lbFailed);
       }
     };
     btn.addEventListener('click', submit);
@@ -440,8 +436,7 @@ function buildLeaderboardBlock(game: string, score: number): HTMLElement {
       showForm();
     })
     .catch(() => {
-      body.innerHTML =
-        '<span class="mg-lb-status">랭킹 서버에 연결할 수 없어요 (로컬 실행 중이거나 오프라인)</span>';
+      body.innerHTML = `<span class="mg-lb-status">${TX.lbOffline}</span>`;
     });
 
   return box;
@@ -507,10 +502,7 @@ const folderEscapeGame: MinigameFactory = (layer, api) => {
   let spawnAcc = 0;
   const icons: FallingIcon[] = [];
 
-  showToast(
-    layer,
-    `${isMobileUi() ? '◀ ▶ 버튼으로' : '← → 로'} 이동 · 쏟아지는 아이콘을 피하세요!`,
-  );
+  showToast(layer, TX.feToast(isMobileUi()));
 
   const spawn = () => {
     if (icons.length > 110) return;
@@ -537,8 +529,8 @@ const folderEscapeGame: MinigameFactory = (layer, api) => {
     player.classList.add('dead');
     const { best, isNew } = submitBest('folder-escape', t);
     showOverPanel(layer, api, {
-      title: '💥 아이콘 더미에 깔렸다!',
-      lines: [`생존 시간 <b>${fmtSec(t)}</b>`, `최고 기록 ${fmtSec(best)}`],
+      title: TX.feOverTitle,
+      lines: [TX.feSurvived(fmtSec(t)), TX.mgBest(fmtSec(best))],
       newBest: isNew,
       game: 'folder-escape',
       score: t,
@@ -576,7 +568,7 @@ const folderEscapeGame: MinigameFactory = (layer, api) => {
         spawnAcc -= every;
         spawn();
       }
-      stats.textContent = `⏱ ${fmtSec(t)}${best0 ? ` · 최고 ${fmtSec(best0)}` : ''}`;
+      stats.textContent = `⏱ ${fmtSec(t)}${best0 ? ` · ${TX.mgBestShort(fmtSec(best0))}` : ''}`;
     }
 
     // 아이콘 낙하 (게임 오버 후에도 여운으로 계속 떨어진다)
@@ -638,12 +630,12 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
     <div class="mg-monitor">
       <div class="mg-screen">
         <span class="mg-temp">51°C</span>
-        <span class="mg-temp-label">CPU 온도</span>
+        <span class="mg-temp-label">${TX.ciTempLabel}</span>
       </div>
       <div class="mg-monitor-foot"></div>
     </div>
     <div class="mg-heatbar"><div class="mg-heatbar-fill"></div></div>
-    <div class="mg-fanbox">${FAN_SVG}<span>클릭 · 스페이스 연타로 냉각!</span></div>`;
+    <div class="mg-fanbox">${FAN_SVG}<span>${TX.ciFanHint}</span></div>`;
   layer.appendChild(pc);
 
   const screen = pc.querySelector<HTMLElement>('.mg-screen')!;
@@ -720,15 +712,15 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
     el.innerHTML = `
       <div class="mg-bsod-inner">
         <div class="mg-bsod-sad">:(</div>
-        <p>PC가 과열되어 다시 시작해야 합니다. 쿨링 팬이 한계를 넘었습니다.</p>
-        <p>가동 시간 <b>${fmtSec(t)}</b> · 최고 기록 ${fmtSec(best)}${
-          isNew ? ' <span class="new-best">🏆 신기록!</span>' : ''
+        <p>${TX.ciBsodMsg}</p>
+        <p>${TX.ciBsodUptime(fmtSec(t))} · ${TX.mgBest(fmtSec(best))}${
+          isNew ? ` <span class="new-best">${TX.mgNewBest}</span>` : ''
         }</p>
-        <p class="mg-bsod-small">중지 코드: THERMAL_SHUTDOWN</p>
-        <p class="mg-bsod-small">아이콘을 다시 열었다 닫아도 처음부터 시작됩니다</p>
+        <p class="mg-bsod-small">${TX.ciBsodStop}</p>
+        <p class="mg-bsod-small">${TX.mgOverHint}</p>
         <div class="mg-over-actions">
-          <button class="mg-btn primary">다시 시작</button>
-          <button class="mg-btn quit">종료</button>
+          <button class="mg-btn primary">${TX.mgRestart}</button>
+          <button class="mg-btn quit">${TX.mgQuitBtn}</button>
         </div>
       </div>`;
     el.querySelector('.primary')!.addEventListener('click', api.restart);
@@ -744,7 +736,7 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
   runLoop((dt) => {
     if (over) return;
     t += dt;
-    heat += (4.5 + t * 0.55) * dt;
+    heat += (7.5 + t * 0.55) * dt;
     fanVel *= Math.exp(-2.2 * dt);
     fanRot += fanVel * dt * 40;
     rotor.style.transform = `rotate(${fanRot}deg)`;
@@ -763,7 +755,7 @@ const computerIdleGame: MinigameFactory = (layer, api) => {
         `hue-rotate(${Math.round(-42 * h)}deg) brightness(${(1 + h * 0.2).toFixed(2)})`;
       iconImg.classList.toggle('mg-icon-hot', heat > 80);
     }
-    stats.textContent = `⏱ 가동 ${fmtSec(t)}${best0 ? ` · 최고 ${fmtSec(best0)}` : ''}`;
+    stats.textContent = `${TX.ciHud(fmtSec(t))}${best0 ? ` · ${TX.mgBestShort(fmtSec(best0))}` : ''}`;
 
     if (heat >= 100) {
       over = true;
@@ -857,7 +849,7 @@ const floppyGame: MinigameFactory = (layer, api) => {
   let zipAcc = 0;
   const files: FallingFile[] = [];
 
-  showToast(layer, '2분 안에 파일을 최대한 많이 담으세요 · 꽉 차면 ZIP으로 압축!');
+  showToast(layer, TX.flToast);
 
   const fmtClock = (sec: number): string => {
     const s = Math.max(0, Math.ceil(sec));
@@ -888,12 +880,8 @@ const floppyGame: MinigameFactory = (layer, api) => {
     phase = 'over';
     const { best, isNew } = submitBest('floppy-144', total);
     showOverPanel(layer, api, {
-      title: '⏰ 시간 종료!',
-      lines: [
-        `담은 전체 용량 <b>${fmtKb(total)}</b>`,
-        `저장 ${saved}개 · 압축 ${zipCount}회`,
-        `최고 기록 ${fmtKb(best)}`,
-      ],
+      title: TX.flOverTitle,
+      lines: [TX.flTotal(fmtKb(total)), TX.flCounts(saved, zipCount), TX.mgBest(fmtKb(best))],
       newBest: isNew,
       game: 'floppy-144',
       score: total,
@@ -901,9 +889,9 @@ const floppyGame: MinigameFactory = (layer, api) => {
   };
 
   const renderStats = () => {
-    stats.textContent = `⏰ ${fmtClock(FLOPPY_TIME - t)} · 💾 ${fmtKb(used)}/${fmtKb(FLOPPY_CAP)} · 담은 용량 ${fmtKb(total)}${
-      best0 ? ` · 최고 ${fmtKb(best0)}` : ''
-    }`;
+    stats.textContent =
+      `⏰ ${fmtClock(FLOPPY_TIME - t)} · 💾 ${fmtKb(used)}/${fmtKb(FLOPPY_CAP)} · ` +
+      `${TX.flHudStored(fmtKb(total))}${best0 ? ` · ${TX.mgBestShort(fmtKb(best0))}` : ''}`;
     capFill.style.width = `${clamp((used / FLOPPY_CAP) * 100, 0, 100)}%`;
   };
   renderStats();
@@ -961,13 +949,13 @@ const floppyGame: MinigameFactory = (layer, api) => {
               const freed = used - Math.round(used * ratio);
               used -= freed;
               zipCount++;
-              popText(layer, f.x, fy - 14, `압축! -${fmtKb(freed)}`, 'gold');
+              popText(layer, f.x, fy - 14, TX.flCompressed(fmtKb(freed)), 'gold');
             } else {
-              popText(layer, f.x, fy - 14, '빈 디스크!', 'gold');
+              popText(layer, f.x, fy - 14, TX.flEmptyDisk, 'gold');
             }
           } else if (used + f.kb > FLOPPY_CAP) {
             // 자리가 없으면 담기지 않고 튕겨 나간다 — ZIP으로 자리를 만들 것
-            popText(layer, f.x, fy - 14, '꽉 참!', 'bad');
+            popText(layer, f.x, fy - 14, TX.flFull, 'bad');
           } else {
             used += f.kb;
             total += f.kb;

@@ -692,9 +692,135 @@ body {
   margin: 6px 4px;
 }
 
+.task-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .task-clock {
   color: #9a9ac0;
   font-size: 12px;
+}
+
+/* --- 언어 표시기 (작업표시줄 / 폰 상태바 공용) --- */
+.lang-switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #9a9ac0;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.lang-btn svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+
+.lang-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #4cc2ff;
+}
+
+.lang-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 9000;
+  min-width: 132px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(28, 28, 54, 0.98);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+.lang-switch.drop-up .lang-menu {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.lang-menu[hidden] {
+  display: none;
+}
+
+.lang-opt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #d9d9ea;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lang-opt:hover {
+  background: rgba(76, 194, 255, 0.16);
+}
+
+.lang-opt.active {
+  color: #4cc2ff;
+}
+
+.lang-check {
+  width: 12px;
+  font-size: 11px;
+  opacity: 0;
+}
+
+.lang-opt.active .lang-check {
+  opacity: 1;
+}
+
+/* 손가락으로 쓰는 화면에서는 누르는 곳을 키운다 */
+html.is-touch .lang-btn {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+html.is-touch .lang-opt,
+html.is-mobile .lang-opt {
+  padding: 12px 12px;
+  font-size: 14px;
+}
+
+/* 폰 상태바 안에서는 신호·배터리 아이콘과 같은 톤으로 */
+html.is-mobile .m-status-icons .lang-btn {
+  gap: 4px;
+  padding: 2px 4px;
+  color: #ffffff;
+  font-size: 11px;
+}
+
+html.is-mobile .m-status-icons .lang-btn svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+}
+
+html.is-mobile .m-statusbar .lang-menu {
+  min-width: 150px;
 }
 
 /* =========================================================

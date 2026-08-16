@@ -3,6 +3,7 @@ import { PROFILE, README_TEXT } from './profile.ts';
 import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame, stopMinigame } from './minigames.ts';
 import { EDGE_PAD, iconCell, taskbarH } from './layout.ts';
+import { TX, createLangSwitcher } from './i18n.ts';
 import notepadIcon from './notepad-icon.svg';
 import trashIcon from './trash-icon.svg';
 
@@ -98,7 +99,7 @@ function createWindow(opts: {
     <div class="win-titlebar">
       <img class="win-title-icon" src="${opts.iconUrl}" alt="">
       <span class="win-title">${opts.title}</span>
-      <button class="win-close" aria-label="닫기">✕</button>
+      <button class="win-close" aria-label="${TX.close}">✕</button>
     </div>
     ${opts.bodyHtml}`;
 
@@ -184,7 +185,7 @@ function keepWindowsInView(): void {
 function openGameWindow(game: GameEntry): void {
   const el = createWindow({
     id: `game-${game.id}`,
-    title: `${game.title} 속성`,
+    title: TX.propsTitle(game.title),
     iconUrl: game.icon,
     width: 520,
     bodyHtml: buildGameBody(game),
@@ -195,7 +196,7 @@ function openGameWindow(game: GameEntry): void {
 function openReadme(): void {
   createWindow({
     id: 'readme',
-    title: 'README.txt - 메모장',
+    title: TX.notepadTitle,
     iconUrl: notepadIcon,
     extraClass: 'notepad',
     bodyHtml: `<pre class="notepad-body">${README_TEXT}</pre>`,
@@ -210,10 +211,10 @@ function showMessageBox(title: string, messageHtml: string): void {
     <div class="msgbox">
       <div class="win-titlebar">
         <span class="win-title">${title}</span>
-        <button class="win-close" aria-label="닫기">✕</button>
+        <button class="win-close" aria-label="${TX.close}">✕</button>
       </div>
       <div class="msgbox-body">${messageHtml}</div>
-      <div class="msgbox-actions"><button class="btn-ok">확인</button></div>
+      <div class="msgbox-actions"><button class="btn-ok">${TX.ok}</button></div>
     </div>`;
   const close = () => backdrop.remove();
   backdrop.querySelector('.win-close')!.addEventListener('click', close);
@@ -249,10 +250,10 @@ const ITEMS: DesktopItem[] = [
   },
   {
     id: 'trash',
-    label: '휴지통',
+    label: TX.trash,
     iconUrl: trashIcon,
     deletable: false,
-    open: () => showMessageBox('휴지통', '휴지통이 비어 있습니다.'),
+    open: () => showMessageBox(TX.trash, TX.trashEmpty),
   },
 ];
 
@@ -375,10 +376,7 @@ function makeIconDraggable(icon: HTMLElement, item: DesktopItem): void {
       if (item.deletable && isOverTrash(icon)) {
         icon.style.left = `${origX}px`;
         icon.style.top = `${origY}px`;
-        showMessageBox(
-          '삭제할 수 없음',
-          `'${item.label}'을(를) 삭제할 수 없습니다.<br>포트폴리오가 이 항목을 사용 중입니다.`,
-        );
+        showMessageBox(TX.deleteFailTitle, TX.deleteFailBody(item.label));
         return;
       }
       savePosition(item.id, icon.offsetLeft, icon.offsetTop);
@@ -461,21 +459,21 @@ function buildStartMenu(): void {
   const gameItems = GAMES.map(
     (g) => `
       <button class="menu-item" data-game="${g.id}">
-        <img src="${g.icon}" alt=""><span>${g.title}</span><span class="menu-sub">${g.platform}</span>
+        <img src="${g.icon}" alt=""><span>${g.title}</span><span class="menu-sub">${g.platformLabel}</span>
       </button>`,
   ).join('');
   menu.innerHTML = `
-    <div class="menu-section">게임</div>
+    <div class="menu-section">${TX.menuGames}</div>
     ${gameItems}
     <hr class="menu-sep">
     <button class="menu-item" data-action="readme">
-      <img src="${notepadIcon}" alt=""><span>소개 (README.txt)</span>
+      <img src="${notepadIcon}" alt=""><span>${TX.menuReadme}</span>
     </button>
     <a class="menu-item" href="${PROFILE.github}" target="_blank" rel="noreferrer">
       <span class="menu-glyph">↗</span><span>GitHub</span>
     </a>
     <a class="menu-item" href="mailto:${PROFILE.email}">
-      <span class="menu-glyph">✉</span><span>이메일 보내기</span>
+      <span class="menu-glyph">✉</span><span>${TX.menuEmail}</span>
     </a>`;
 
   menu.addEventListener('click', (e) => {
@@ -499,6 +497,21 @@ function buildStartMenu(): void {
 
 function closeStartMenu(): void {
   document.getElementById('start-menu')!.hidden = true;
+}
+
+/* ================= 작업표시줄 오른쪽 (언어 · 시계) ================= */
+
+/** 시계 왼쪽에 언어 표시기를 둔다 — 윈도우 입력기 표시기가 있던 자리 */
+function initTaskbarRight(): void {
+  const startBtn = document.getElementById('start-btn')!;
+  startBtn.setAttribute('aria-label', TX.start);
+  startBtn.setAttribute('title', TX.start);
+
+  const clock = document.getElementById('clock')!;
+  const right = document.createElement('div');
+  right.className = 'task-right';
+  clock.replaceWith(right);
+  right.append(createLangSwitcher({ dropUp: true }), clock);
 }
 
 /* ================= 시계 · 단축키 ================= */
@@ -555,5 +568,6 @@ function initResponsiveLayout(): void {
 renderIcons();
 initRubberBand();
 buildStartMenu();
+initTaskbarRight();
 startClock();
 initResponsiveLayout();

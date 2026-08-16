@@ -1,4 +1,8 @@
 import './style.css';
+import { applyDocumentLang } from './i18n.ts';
+
+// <html lang>·meta 설명을 선택(또는 자동 감지)된 언어에 맞춘다
+applyDocumentLang();
 
 // 터치 기기 + 폰 크기 화면(또는 폰 UA)이면 폰 UI, 그 외에는 바탕화면 UI
 // ?ui=mobile / ?ui=desktop 으로 강제 전환 가능 (미리보기·디버그용)

@@ -1,15 +1,16 @@
 import type { GameEntry } from './games.ts';
+import { TX } from './i18n.ts';
 
 /** 게임 속성(일반/자세히/이전 버전) 마크업 — 데스크톱 창과 모바일 앱 페이지에서 공용 */
 export function buildGameBody(game: GameEntry): string {
   const d = game.details;
   let mainBtn: string;
   if (game.playUrl) {
-    mainBtn = `<a class="btn-play" href="${game.playUrl}" target="_blank" rel="noreferrer">플레이</a>`;
+    mainBtn = `<a class="btn-play" href="${game.playUrl}" target="_blank" rel="noreferrer">${TX.btnPlay}</a>`;
   } else if (game.downloadUrl) {
-    mainBtn = `<a class="btn-play" href="${game.downloadUrl}" download>다운로드 (APK)</a>`;
+    mainBtn = `<a class="btn-play" href="${game.downloadUrl}" download>${TX.btnDownload}</a>`;
   } else {
-    mainBtn = `<span class="btn-play disabled">개발 중</span>`;
+    mainBtn = `<span class="btn-play disabled">${TX.btnWip}</span>`;
   }
   const youtubeBtn = game.youtube
     ? `<a class="btn-link youtube" href="${game.youtube.url}" target="_blank" rel="noreferrer"><span class="yt-glyph">▶</span> ${game.youtube.label} ↗</a>`
@@ -25,7 +26,7 @@ export function buildGameBody(game: GameEntry): string {
     )
     .join('');
   const awards = d?.awards.length
-    ? `<div class="props-section-title">전시 · 수상</div>
+    ? `<div class="props-section-title">${TX.secAwards}</div>
        <ul class="award-list">${d.awards.map((a) => `<li>${a}</li>`).join('')}</ul>`
     : '';
 
@@ -34,7 +35,7 @@ export function buildGameBody(game: GameEntry): string {
       <div class="props-head">
         <img src="${game.icon}" alt="">
         <div>
-          <div class="props-name">${game.title} <span class="platform-badge">${game.platform}</span></div>
+          <div class="props-name">${game.title} <span class="platform-badge">${game.platformLabel}</span></div>
           <div class="props-sub">${game.tagline} · ${game.year}</div>
         </div>
       </div>
@@ -46,19 +47,19 @@ export function buildGameBody(game: GameEntry): string {
 
   const detailPanel = d
     ? `<section class="tab-panel" data-tab="detail" hidden>
-        <div class="props-section-title">만들게 된 배경</div>
+        <div class="props-section-title">${TX.secBackground}</div>
         ${d.background.map((p) => `<p class="detail-p">${p}</p>`).join('')}
-        <div class="props-section-title">이 게임으로 보여주고 싶은 것</div>
+        <div class="props-section-title">${TX.secStatement}</div>
         ${d.statement.map((p) => `<p class="detail-p">${p}</p>`).join('')}
         ${
           d.devComment?.length
-            ? `<div class="props-section-title">개발자 코멘트</div>
+            ? `<div class="props-section-title">${TX.secDevComment}</div>
                <div class="dev-comment">${d.devComment.map((p) => `<p class="detail-p">${p}</p>`).join('')}</div>`
             : ''
         }
       </section>`
     : `<section class="tab-panel" data-tab="detail" hidden>
-        <p class="tab-empty">아직 작성 중입니다.</p>
+        <p class="tab-empty">${TX.tabEmptyDetail}</p>
       </section>`;
 
   const versionsPanel = d?.versions.length
@@ -70,7 +71,7 @@ export function buildGameBody(game: GameEntry): string {
             <header class="ver-head">
               <span class="ver-badge">${v.version}</span>
               <span class="ver-title">${v.title}</span>
-              ${v.current ? '<span class="ver-current">현재 버전</span>' : ''}
+              ${v.current ? `<span class="ver-current">${TX.verCurrent}</span>` : ''}
               <span class="ver-date">${v.date}</span>
             </header>
             <ul class="ver-changes">${v.changes.map((c) => `<li>${c}</li>`).join('')}</ul>
@@ -79,14 +80,14 @@ export function buildGameBody(game: GameEntry): string {
           .join('')}
       </section>`
     : `<section class="tab-panel" data-tab="versions" hidden>
-        <p class="tab-empty">기록된 이전 버전이 없습니다.</p>
+        <p class="tab-empty">${TX.tabEmptyVersions}</p>
       </section>`;
 
   return `
     <div class="props-tabs" role="tablist">
-      <button class="props-tab active" data-tab="general" role="tab">일반</button>
-      <button class="props-tab" data-tab="detail" role="tab">자세히</button>
-      <button class="props-tab" data-tab="versions" role="tab">이전 버전</button>
+      <button class="props-tab active" data-tab="general" role="tab">${TX.tabGeneral}</button>
+      <button class="props-tab" data-tab="detail" role="tab">${TX.tabDetail}</button>
+      <button class="props-tab" data-tab="versions" role="tab">${TX.tabVersions}</button>
     </div>
     <div class="win-body props-body">
       ${generalPanel}
