@@ -148,9 +148,15 @@ const RAW_GAMES: RawGameEntry[] = [
         },
       ],
       awards: {
-        ko: ['BIC Festival 2026 루키 부문 출품 (2026.06) · 온라인 전시 (2026.08)'],
+        ko: [
+          'BIC Festival 2026 루키 부문 — Excellence in Experimental 수상 (2026.08)',
+          'BIC Festival 2026 루키 부문 — Excellence in Casual 파이널리스트 (2026.08)',
+          'BIC Festival 2026 루키 부문 출품 (2026.06) · 온라인 · 현장 전시 (2026.08)',
+        ],
         en: [
-          'Submitted to BIC Festival 2026, Rookie division (Jun 2026) · online exhibition (Aug 2026)',
+          'BIC Festival 2026, Rookie Division — Excellence in Experimental, WINNER (Aug 2026)',
+          'BIC Festival 2026, Rookie Division — Excellence in Casual, FINALIST (Aug 2026)',
+          'Submitted to BIC Festival 2026, Rookie Division (Jun 2026) · online and on-site exhibition (Aug 2026)',
         ],
       },
       background: {
@@ -230,10 +236,35 @@ const RAW_GAMES: RawGameEntry[] = [
       },
       versions: [
         {
+          version: 'v0.7',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: 'BIC 현장 전시 & 피드백 반영', en: 'BIC on-site build & feedback pass' },
+          current: true,
+          changes: {
+            ko: [
+              '부스 회전율을 고려한 10 스테이지 현장 데모 빌드로 전시 — 전시 종료 후 본편(전체 스테이지 · 도전과제 23종)으로 복귀',
+              '전 스테이지 이름 바꾸기를 대소문자 무시 매칭으로 통일 — 현장에서 관람객이 가장 많이 막히던 지점',
+              '튜토리얼에 스포트라이트 인트로 추가 + 소프트락 경로 차단',
+              '되돌리기 위치를 파일 id에 앵커링 + 기차 탈선 시 되돌리기 종료',
+              '오르골 창을 8×8 체스판으로 개편 + 잠긴 출구를 이름으로 여는 열쇠 스테이지 정비',
+              '보기(View) 메뉴 개방 + 붙여넣기 대상을 끊긴 다리 아이콘으로 표시',
+              'Tauri 데스크톱 빌드 추가',
+            ],
+            en: [
+              'Exhibited with a 10-stage on-site demo build sized for booth turnover — restored to the full game (all stages, 23 achievements) after the show',
+              'Renaming now matches case-insensitively in every stage — the single biggest place visitors got stuck on the floor',
+              'Spotlight intros in the tutorial + softlock paths blocked',
+              'Undo positions anchored to file ids + undo ends when the train derails',
+              'The music-box window reworked into an 8×8 chessboard + a pass over the key stages, where locked exits open by name',
+              'View menu opened up + paste targets marked with a broken-bridge icon',
+              'Added a Tauri desktop build',
+            ],
+          },
+        },
+        {
           version: 'v0.6',
           date: { ko: '2026.08', en: 'Aug 2026' },
           title: { ko: 'BIC 온라인 전시 빌드', en: 'BIC online exhibition build' },
-          current: true,
           changes: {
             ko: [
               '스테이지를 「도입 4 + 종합 1」 5단위 블록으로 재편 — 배운 로직이 반드시 다시 쓰이는 구조',
