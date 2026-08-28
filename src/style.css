@@ -1282,6 +1282,7 @@ html.is-mobile .m-app .notepad-body {
 
 .mg-pop {
   position: absolute;
+  white-space: nowrap;
   font-size: 12px;
   font-weight: 700;
   color: #8fe388;

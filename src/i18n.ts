@@ -116,7 +116,7 @@ const KO = {
   mgRestart: '다시 시작',
   mgQuitBtn: '종료',
   mgNewBest: '🏆 신기록!',
-  mgOverHint: '아이콘을 다시 열었다 닫아도 처음부터 시작됩니다',
+  mgOverHint: '아이콘을 다시 열었다가 닫아도 처음부터 다시 시작됩니다',
   mgBest: (v: string) => `최고 기록 ${v}`,
   mgBestShort: (v: string) => `최고 ${v}`,
 
@@ -130,32 +130,32 @@ const KO = {
   lbSubmit: '기록 등록',
   lbSubmitting: '등록 중…',
   lbAlready: (name: string, rank: number | null) =>
-    `"${name}"의 더 좋은 기록이 이미 ${rank}위에 있어요`,
+    `이미 "${name}" 이름으로 더 좋은 기록이 ${rank}위에 올라 있어요`,
   lbRanked: (rank: number) => `${rank}위에 등록됐어요!`,
-  lbClose: (rank: number) => `아깝다! ${rank}위 — TOP 10까지 조금 남았어요`,
-  lbOutOfRank: '등록했지만 순위권 밖이에요. 다음 판에 다시 도전!',
+  lbClose: (rank: number) => `아깝다! ${rank}위라서 TOP 10에 조금 못 미쳤어요`,
+  lbOutOfRank: '등록했지만 순위권 밖이에요. 다음 판에 다시 도전해 보세요!',
   lbFailed: '등록에 실패했어요. 잠시 후 다시 시도해 주세요',
 
   feToast: (mobile: boolean) =>
-    `${mobile ? '◀ ▶ 버튼으로' : '← → 로'} 이동 · 쏟아지는 아이콘을 피하세요!`,
+    `${mobile ? '◀ ▶ 버튼으로' : '← → 키로'} 이동하면서 쏟아지는 아이콘을 피하세요!`,
   feOverTitle: '💥 아이콘 더미에 깔렸다!',
   feSurvived: (v: string) => `생존 시간 <b>${v}</b>`,
 
   ciTempLabel: 'CPU 온도',
-  ciFanHint: '클릭 · 스페이스 연타로 냉각!',
+  ciFanHint: '클릭하거나 스페이스를 연타해서 식히세요!',
   ciHud: (v: string) => `⏱ 가동 ${v}`,
   ciBsodMsg: 'PC가 과열되어 다시 시작해야 합니다. 쿨링 팬이 한계를 넘었습니다.',
   ciBsodUptime: (v: string) => `가동 시간 <b>${v}</b>`,
   ciBsodStop: '중지 코드: THERMAL_SHUTDOWN',
 
-  flToast: '2분 안에 파일을 최대한 많이 담으세요 · 꽉 차면 ZIP으로 압축!',
+  flToast: '2분 안에 파일을 최대한 많이 담으세요 · 디스크가 꽉 차면 ZIP을 받아 압축하세요!',
   flOverTitle: '⏰ 시간 종료!',
   flTotal: (v: string) => `담은 전체 용량 <b>${v}</b>`,
   flCounts: (saved: number, zips: number) => `저장 ${saved}개 · 압축 ${zips}회`,
   flHudStored: (v: string) => `담은 용량 ${v}`,
   flCompressed: (v: string) => `압축! -${v}`,
-  flEmptyDisk: '빈 디스크!',
-  flFull: '꽉 참!',
+  flEmptyDisk: '디스크가 비었어요!',
+  flFull: '디스크가 꽉 찼어요!',
 };
 
 const EN: typeof KO = {

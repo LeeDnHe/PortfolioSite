@@ -9,14 +9,14 @@ export const PROFILE = {
 const README: L = {
   ko: `게임 개발자 이동희입니다.
 
-이미 존재하는 게임들의 스타일 보단
-익숙함을 비틀어 게임의 로직으로 만드는 것을 좋아합니다.
+이미 나와 있는 게임의 스타일을 따라가기보다는,
+익숙한 것을 비틀어 게임의 로직으로 만드는 일을 좋아합니다.
 
 지금 만들고 있는 것
-  · Folder Escape — 파일탐색기 퍼즐 게임 (PC)
+  · Folder Escape — 파일 탐색기 퍼즐 게임 (PC)
   · 컴퓨터 키우기 — 방치형 키우기 게임 (모바일)
-  · Floppy-144 — 1.44MB 용량 제한 액션 로그라이트 (PC - 개발중)
-  · Folder Memory — 메타 반전 내러티브 게임 (PC - 기획중)
+  · Floppy-144 — 1.44MB 용량 제한 액션 로그라이트 (PC - 개발 중)
+  · Folder Memory — 메타 반전 내러티브 게임 (PC - 기획 중)
 
 연락처
   · GitHub  github.com/LeeDnHe
