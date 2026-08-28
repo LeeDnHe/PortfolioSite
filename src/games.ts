@@ -242,27 +242,23 @@ const RAW_GAMES: RawGameEntry[] = [
           current: true,
           changes: {
             ko: [
-              '튜토리얼을 뺀 본편 스테이지가 25개로 늘고, 블록 3과 블록 4를 각각 「기억」과 「들불과 덤불」이라는 주제로 재편',
-              '신규 종합 스테이지 「FamilyAlbum.zip」: 앞선 네 스테이지에서 모은 단서를 교차 대조해 답을 좁히는 추리형 관문',
-              '신규 스테이지 「MultiWindow」: 바로가기가 다른 창으로 통하는 포털이 되는 다중 창 퍼즐',
-              '음계탑을 오르골 연주 스테이지로 개편하고, 옷장과 서랍 같은 가구 폴더와 태엽 도구를 추가',
-              '2단계 힌트를 시간이 지나면 다시 차오르는 토큰 방식으로 변경',
-              '제거할 수 있는 체스 기물 벽과 기상청 덤불 타일을 추가',
-              '메모장(.txt) 파라미터 편집에 저장 단계를 추가해서 값이 언제 적용되는지 드러냄',
+              '스테이지를 두 개 추가해서 전체 25개 스테이지로 확장',
+              '신규 종합 스테이지 「FamilyAlbum.zip」(Stage 15): 앞선 네 스테이지를 하나로 합친 zip 스테이지로 완성',
+              '신규 스테이지 「MultiWindow」(Stage 25): 바로가기가 다른 창으로 통하는 포털이 되는 다중 창 퍼즐',
+              '2단계 힌트를 토큰 방식으로 변경: 처음에 한 번 주어지고, zip 스테이지를 클리어할 때마다 한 번씩 충전',
+              '메모장(.txt)으로 파라미터를 편집할 때 저장 단계를 거치도록 바꿔서, 수정한 값이 언제 적용되는지 분명하게 표시',
               '남아 있던 이모지 아이콘을 모두 SVG로 교체하고, 도전과제 전용 배지 세트를 추가',
-              '지형 타일은 이름을 바꿀 수 없도록 잠그고, 캐릭터가 움직이는 동안 들어온 명령은 무시하도록 수정',
-              '게임 안에 들어가는 한국어 문구를 전반적으로 다시 다듬음',
+              '캐릭터가 이동하는 동안 들어온 명령은 무시하도록 수정',
+              '게임 안에 나오는 한국어 문구를 전반적으로 다시 정리',
             ],
             en: [
-              'The main game grew to 25 stages on top of the tutorial, with blocks 3 and 4 rebuilt around the themes "memory" and "brushfire"',
-              'New synthesis stage "FamilyAlbum.zip": a deduction gate where you cross-reference the clues gathered in the previous four stages',
-              'New stage "MultiWindow": a multi-window puzzle where shortcuts become portals into other windows',
-              'The scale tower reworked into a music-box performance stage, plus furniture folders (wardrobes, drawers) and a mainspring tool',
-              'The second hint is now spent from tokens that recharge over time',
-              'Removable chess-piece walls and bush tiles for the weather bureau stage',
-              'The .txt parameter editor now has an explicit save step, so it is clear when a value takes effect',
+              'Two more stages, bringing the game to 25 stages in total',
+              'New synthesis stage "FamilyAlbum.zip" (Stage 15): a zip stage that folds the previous four stages into one',
+              'New stage "MultiWindow" (Stage 25): a multi-window puzzle where shortcuts become portals into other windows',
+              'Second-tier hints now run on tokens: one to start with, and one more every time you clear a zip stage',
+              'Editing parameters in Notepad (.txt) now goes through an explicit save step, so it is clear when a value takes effect',
               'Every remaining emoji icon replaced with SVG, plus a dedicated badge set for achievements',
-              'Terrain tiles are locked against renaming, and commands issued while the character is animating are ignored',
+              'Commands issued while the character is moving are now ignored',
               'A full pass over the Korean player-facing copy',
             ],
           },
@@ -273,13 +269,13 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: 'BIC 현장 전시 & 피드백 반영', en: 'BIC on-site build & feedback pass' },
           changes: {
             ko: [
-              '부스 회전율을 고려한 10 스테이지 현장 데모 빌드로 전시 — 전시 종료 후 본편(전체 스테이지 · 도전과제 23종)으로 복귀',
-              '전 스테이지 이름 바꾸기를 대소문자 무시 매칭으로 통일 — 현장에서 관람객이 가장 많이 막히던 지점',
-              '튜토리얼에 스포트라이트 인트로 추가 + 소프트락 경로 차단',
-              '되돌리기 기준 위치를 파일 id에 고정 + 기차가 탈선하면 되돌리기 종료',
-              '오르골 창을 8×8 체스판으로 개편 + 잠긴 출구를 이름으로 여는 열쇠 스테이지 정비',
-              '보기(View) 메뉴 개방 + 붙여넣기 대상을 끊긴 다리 아이콘으로 표시',
-              'Tauri 데스크톱 빌드 추가',
+              '부스 회전율을 고려해 스테이지 10개짜리 현장 데모 빌드로 전시했고, 전시가 끝난 뒤에는 본편(전체 스테이지, 도전과제 23종)으로 복귀',
+              '모든 스테이지에서 이름 바꾸기가 대소문자를 구분하지 않도록 통일: 현장에서 관람객이 가장 많이 막히던 부분',
+              '튜토리얼에 스포트라이트 인트로를 추가하고, 진행이 막히는 소프트락 경로를 차단',
+              '되돌리기의 기준 위치를 파일 id에 고정하고, 기차가 탈선하면 되돌리기를 종료하도록 수정',
+              '오르골 창을 8×8 체스판으로 개편하고, 잠긴 출구를 이름으로 여는 열쇠 스테이지를 정비',
+              '보기(View) 메뉴를 개방하고, 붙여넣을 수 있는 자리를 끊긴 다리 아이콘으로 표시',
+              'Tauri 기반 데스크톱 빌드를 추가',
             ],
             en: [
               'Exhibited with a 10-stage on-site demo build sized for booth turnover — restored to the full game (all stages, 23 achievements) after the show',
@@ -298,12 +294,12 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: 'BIC 온라인 전시 빌드', en: 'BIC online exhibition build' },
           changes: {
             ko: [
-              '스테이지를 「도입 4 + 종합 1」 5단위 블록으로 재편 — 배운 로직이 반드시 다시 쓰이는 구조',
-              '신규 종합 스테이지 「Junction.zip」·「Roundhouse.zip」 — 새 로직 없이 앞의 네 스테이지를 통합한 중간보스 스타일 퍼즐',
-              '신규 스테이지 「Defrag」 — 디스크 조각 모음 퍼즐',
-              '도전과제 22종 + 블루스크린 연출 추가',
-              '모든 스테이지에 2단계 힌트 추가 + 튜토리얼에서 힌트 시스템 안내',
-              '편집 메뉴 복사/붙여넣기 개방(잘라내기 폐기) + 되돌리기 적용 범위 확대',
+              '스테이지를 「도입 4 + 종합 1」의 5단위 블록으로 재편: 앞에서 배운 조작을 반드시 다시 쓰게 되는 구조',
+              '신규 종합 스테이지 「Junction.zip」과 「Roundhouse.zip」 추가: 새로운 조작 없이 앞선 네 스테이지를 통합한 중간 보스 성격의 퍼즐',
+              '신규 스테이지 「Defrag」 추가: 디스크 조각 모음을 소재로 삼은 퍼즐',
+              '도전과제 22종과 블루스크린 연출을 추가',
+              '모든 스테이지에 2단계 힌트를 추가하고, 튜토리얼에서 힌트 시스템을 안내',
+              '편집 메뉴에서 복사와 붙여넣기를 개방하고(잘라내기는 폐기), 되돌리기가 적용되는 범위를 확대',
             ],
             en: [
               'Stages restructured into blocks of five (4 introductions + 1 synthesis) — every mechanic you learn is guaranteed to come back',
@@ -321,11 +317,11 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: '사운드 & 언어', en: 'Sound & languages' },
           changes: {
             ko: [
-              '루프 BGM 시스템 추가 + 볼륨 설정 저장',
-              '한국어/영어 언어 시스템 추가',
+              '반복 재생되는 BGM 시스템을 추가하고, 볼륨 설정을 저장하도록 변경',
+              '한국어와 영어를 지원하는 언어 시스템을 추가',
               '음계탑 스테이지를 "멜로디를 따라 걷는" 방식으로 개편',
-              'Ctrl/Shift 다중 선택 + 일괄 이름 바꾸기 지원',
-              '신규 스테이지 「메신저」 — 유품 상자 속 단서를 교차 참조하는 암호 퍼즐',
+              'Ctrl·Shift 다중 선택과 일괄 이름 바꾸기를 지원',
+              '신규 스테이지 「메신저」 추가: 유품 상자에 담긴 단서를 교차 참조하는 암호 퍼즐',
             ],
             en: [
               'Looping BGM system + saved volume settings',
@@ -342,11 +338,11 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: '데모 완성', en: 'Demo complete' },
           changes: {
             ko: [
-              '시작 화면 + 진행도 저장(이어하기) 시스템 추가',
+              '시작 화면과 진행도 저장(이어하기) 시스템을 추가',
               '신규 스테이지: 검색 길 찾기 · 숨김 발판 · 전력 회로 · 고양이 추격',
               '전력 회로를 회전 파이프 방식으로 개편',
-              '데모 최종 스테이지를 클리어하면 나오는 엔딩 추가',
-              'BIC Festival 2026 루키 부문 출품',
+              '데모의 최종 스테이지를 클리어하면 재생되는 엔딩을 추가',
+              'BIC Festival 2026 루키 부문에 출품',
             ],
             en: [
               'Title screen + progress saving (continue) system',
@@ -365,7 +361,7 @@ const RAW_GAMES: RawGameEntry[] = [
             ko: [
               '신규 스테이지: 마트료시카(중첩 폴더) · 기상청(날씨 조작) · 중력 실험실(창 회전·블랙홀)',
               '방향 중력을 지원하는 통합 중력 시스템으로 재설계',
-              '튜토리얼을 능동 학습형으로 개편 + WASD 이동 지원',
+              '튜토리얼을 직접 조작해 보며 익히는 방식으로 개편하고, WASD 이동을 지원',
             ],
             en: [
               'New stages: Matryoshka (nested folders) · Weather Bureau (weather manipulation) · Gravity Lab (window rotation, black holes)',
@@ -381,7 +377,7 @@ const RAW_GAMES: RawGameEntry[] = [
           changes: {
             ko: [
               '신규 스테이지: 음계탑 · 체스판 · 기차역 · 정렬 공장 · 해체 공사장 · 타임라인',
-              '서비스 레이어 구조로 전면 리팩토링',
+              '전체 구조를 서비스 레이어 방식으로 리팩토링',
               '천문대 스테이지를 시간을 오가는 타임라인 스테이지로 교체',
             ],
             en: [
@@ -563,10 +559,10 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: '후반 성장 개편', en: 'Late-game growth rework' },
           changes: {
             ko: [
-              '작업 속도 상한 폐기 — 후반 부품 효율 성장이 분당 수익에 끝까지 반영',
-              '합성 결과물 자동 장착 — 구매와 동일한 효율 비교 룰 적용',
-              '모바일에서 황금판 카드에 남던 스크롤 잔상 수정 + 부품 카드 수익 표기 색상 통일',
-              '보상형 인시던트 확장(디스크 최적화 등) 설계 중',
+              '작업 속도 상한을 폐기해서, 후반 부품의 효율 성장이 분당 수익에 끝까지 반영되도록 변경',
+              '합성한 부품을 자동으로 장착하도록 변경: 구매할 때와 동일한 효율 비교 규칙을 적용',
+              '모바일에서 황금판 카드에 남던 스크롤 잔상을 수정하고, 부품 카드의 수익 표기 색상을 통일',
+              '보상형 인시던트(디스크 최적화 등)를 확장하는 방향으로 설계하는 중',
             ],
             en: [
               'Work-speed cap removed — late-game part efficiency now feeds income per minute all the way up',
@@ -580,18 +576,18 @@ const RAW_GAMES: RawGameEntry[] = [
           version: 'v0.2',
           date: { ko: '2026.05', en: 'May 2026' },
           title: {
-            ko: '캐시샵 · 배틀패스 + 페이싱 정비',
+            ko: '캐시샵과 배틀패스, 페이싱 정비',
             en: 'Cash shop · battle pass + pacing pass',
           },
           current: true,
           changes: {
             ko: [
-              '시즌1 배틀패스(30레벨) + 캐시샵 — 가챠 없이 가속·부스트만 판매하는 수익화 골격',
-              '쿨링 보상 미니게임 — 30초 동안 팬을 돌려 클리어하면 1시간 골드 +20% 버프',
-              '확률 안내 모달 6종 — 뽑기·복각·합성·코드 타이퍼·활동·시대 확률 전면 공개',
-              '코드 타이퍼 잭팟(탭당 0.1%, ×50) 추가 + 라인 보상 전면 재산정',
-              '2~6세대 부품 가격·시대 졸업 기준 리밸런싱 — 풀세트 + 활동 2개 기준 페이싱 정렬',
-              '손해형 인시던트(블루스크린·DDoS) 잠정 중단 — 보상형 전환의 시작',
+              '시즌1 배틀패스(30레벨)와 캐시샵을 추가: 가챠 없이 가속과 부스트만 판매하는 수익화 구조',
+              '쿨링 보상 미니게임을 추가: 30초 동안 팬을 돌려 클리어하면 한 시간 동안 골드 획득량이 20% 증가',
+              '확률 안내 모달 6종을 추가해서 뽑기·복각·합성·코드 타이퍼·활동·시대의 확률을 전면 공개',
+              '코드 타이퍼에 잭팟(탭당 0.1%, 보상 50배)을 추가하고, 라인 보상을 전면 재산정',
+              '2~6세대 부품 가격과 시대 졸업 기준을 리밸런싱: 부품 풀세트와 활동 2개를 기준으로 페이싱을 정렬',
+              '손해를 입히는 인시던트(블루스크린·DDoS)를 잠정 중단: 보상형으로 전환하는 첫 단계',
             ],
             en: [
               'Season 1 battle pass (30 levels) + cash shop — a monetisation frame selling only speed-ups and boosts, no gacha',
@@ -609,11 +605,11 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: 'Flick 출품 빌드', en: 'Flick contest build' },
           changes: {
             ko: [
-              'Flick × KRAFTON Casual Game Challenge SEASON 01 출품',
-              '일일 6종 / 주간 3종 퀘스트 + 보상 인벤토리 + 시간제 버프 시스템',
-              '도전과제 11종 — 보상은 전부 환생 화폐 TP로 지급',
-              '한국어/영어 로컬라이제이션 + Android 릴리스 서명 빌드',
-              '오프라인 수익 50% 모델 + 백그라운드 알림(Doze 지연 우회)',
+              'Flick × KRAFTON Casual Game Challenge SEASON 01에 출품',
+              '일일 퀘스트 6종과 주간 퀘스트 3종, 보상 인벤토리, 시간제 버프 시스템을 추가',
+              '도전과제 11종을 추가하고, 보상은 모두 환생 화폐인 TP로 지급',
+              '한국어와 영어 로컬라이제이션을 적용하고, Android 릴리스 서명 빌드를 준비',
+              '오프라인 수익을 50%로 지급하는 모델과 백그라운드 알림(Doze 지연 우회)을 구현',
             ],
             en: [
               'Entered the Flick × KRAFTON Casual Game Challenge SEASON 01',
@@ -630,9 +626,9 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: '컨셉 & 코어 루프', en: 'Concept & core loop' },
           changes: {
             ko: [
-              '기획서 작성 — 7세대 시대 구조 · 부품 호환성 매트릭스 · 환생 TP 경제 설계',
-              'Unity 대신 웹 스택(React + Capacitor) 채택 — Folder Escape의 웹 노하우 재사용',
-              '환생 + Tech Tree + 부품 등급/황금판 + 도감 + 박물관 + 3분할 리더보드 코어 구현',
+              '기획서를 작성하면서 7세대 시대 구조, 부품 호환성 매트릭스, 환생 TP 경제를 설계',
+              'Unity 대신 웹 스택(React + Capacitor)을 채택: Folder Escape에서 쌓은 웹 개발 경험을 재사용',
+              '환생, 테크 트리, 부품 등급과 황금판, 도감, 박물관, 3분할 리더보드 등 코어 시스템을 구현',
             ],
             en: [
               'Wrote the design doc — 7-generation era structure · part compatibility matrix · rebirth TP economy',
