@@ -3,6 +3,7 @@ import { PROFILE, README_TEXT } from './profile.ts';
 import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame } from './minigames.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
+import { showUpdateToast, updatesBodyHtml } from './updates.ts';
 import notepadIcon from './notepad-icon.svg';
 
 /* ================= 폰 셸 ================= */
@@ -159,6 +160,15 @@ function openReadmeApp(): void {
   });
 }
 
+/** 업데이트 소식 페이지 — 알림을 눌렀을 때 열린다 */
+function openUpdatesApp(newIds: string[] = []): void {
+  openAppPage({
+    id: 'updates',
+    title: TX.updTitle,
+    bodyHtml: updatesBodyHtml(newIds),
+  });
+}
+
 interface MobileApp {
   id: string;
   label: string;
@@ -246,3 +256,6 @@ function startClock(): void {
 }
 
 startClock();
+
+// 홈 화면이 다 그려진 뒤, 아직 못 본 소식이 있으면 상태바 아래로 알림이 내려온다
+showUpdateToast({ onDetails: openUpdatesApp });

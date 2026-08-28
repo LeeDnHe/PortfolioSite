@@ -4,6 +4,7 @@ import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame, stopMinigame } from './minigames.ts';
 import { EDGE_PAD, iconCell, taskbarH } from './layout.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
+import { showUpdateToast, updatesBodyHtml, updateIcon } from './updates.ts';
 import notepadIcon from './notepad-icon.svg';
 import trashIcon from './trash-icon.svg';
 
@@ -200,6 +201,17 @@ function openReadme(): void {
     iconUrl: notepadIcon,
     extraClass: 'notepad',
     bodyHtml: `<pre class="notepad-body">${README_TEXT}</pre>`,
+  });
+}
+
+/** 업데이트 소식 창 — newIds에 든 항목에는 NEW 배지가 붙는다 */
+function openUpdatesWindow(newIds: string[] = []): void {
+  createWindow({
+    id: 'updates',
+    title: TX.updTitle,
+    iconUrl: updateIcon,
+    width: 460,
+    bodyHtml: updatesBodyHtml(newIds),
   });
 }
 
@@ -469,6 +481,9 @@ function buildStartMenu(): void {
     <button class="menu-item" data-action="readme">
       <img src="${notepadIcon}" alt=""><span>${TX.menuReadme}</span>
     </button>
+    <button class="menu-item" data-action="updates">
+      <img src="${updateIcon}" alt=""><span>${TX.menuUpdates}</span>
+    </button>
     <a class="menu-item" href="${PROFILE.github}" target="_blank" rel="noreferrer">
       <span class="menu-glyph">↗</span><span>GitHub</span>
     </a>
@@ -482,6 +497,7 @@ function buildStartMenu(): void {
     const gameId = btn.dataset.game;
     if (gameId) openGameWindow(GAMES.find((g) => g.id === gameId)!);
     if (btn.dataset.action === 'readme') openReadme();
+    if (btn.dataset.action === 'updates') openUpdatesWindow();
     closeStartMenu();
   });
 
@@ -571,3 +587,5 @@ buildStartMenu();
 initTaskbarRight();
 startClock();
 initResponsiveLayout();
+// 바탕화면이 다 그려진 뒤, 아직 못 본 소식이 있으면 오른쪽 아래에서 알림이 올라온다
+showUpdateToast({ onDetails: openUpdatesWindow });

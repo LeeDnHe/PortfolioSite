@@ -474,6 +474,128 @@ body {
   color: #444;
 }
 
+/* =========================================================
+   업데이트 알림 — 윈도우 알림처럼 오른쪽 아래에서 올라온다.
+   폰에서는 상태바 아래로 내려오는 배너 모양 (아래 is-mobile 규칙)
+   ========================================================= */
+
+.upd-toast {
+  position: fixed;
+  right: 16px;
+  bottom: calc(var(--taskbar-h) + 12px);
+  z-index: 25000;
+  width: min(360px, calc(100vw - 32px));
+  background: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.34);
+  cursor: pointer;
+  opacity: 0;
+  /* 나타나기 전 위치 — 폰에서는 위에서 내려오도록 부호만 뒤집는다 */
+  transform: translateY(var(--upd-from, 24px));
+  transition:
+    opacity 0.26s ease,
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.upd-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.upd-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 4px 5px 12px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #ededed;
+}
+
+.upd-app {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  color: #666;
+}
+
+.upd-app img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.upd-body {
+  padding: 12px 14px 13px;
+}
+
+.upd-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.upd-items {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.upd-items li {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.upd-more {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: #8a8a8a;
+}
+
+.upd-actions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upd-detail {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #0067c0;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.upd-detail:hover {
+  background: #0078d4;
+}
+
+.upd-date {
+  margin-left: auto;
+  font-size: 11px;
+  color: #999;
+}
+
+/* 업데이트 소식 창 — 게임 "이전 버전" 탭과 같은 목록 모양을 쓴다 */
+.upd-log .ver-entry:first-child {
+  padding-top: 0;
+}
+
+/* 애니메이션을 줄여 달라는 설정이면 슬라이드 없이 서서히 나타나기만 한다 */
+@media (prefers-reduced-motion: reduce) {
+  .upd-toast {
+    transform: none;
+    transition: opacity 0.2s ease;
+  }
+}
+
 /* --- 메모장 창 --- */
 .notepad-body {
   font-family: Consolas, 'Malgun Gothic', monospace;
@@ -1988,6 +2110,32 @@ html.is-mobile .mg-stats {
 html.is-mobile .mg-quit {
   top: 26px;
   right: 12px;
+}
+
+/* 업데이트 알림 — 폰에서는 상태바 아래로 내려오는 iOS식 배너 */
+html.is-mobile .upd-toast {
+  --upd-from: -28px;
+  top: calc(env(safe-area-inset-top) + 42px);
+  right: 12px;
+  bottom: auto;
+  left: 12px;
+  width: auto;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+html.is-mobile .upd-head {
+  padding: 8px 6px 0 14px;
+  background: transparent;
+  border-bottom: none;
+}
+
+html.is-mobile .upd-body {
+  padding: 6px 14px 14px;
 }
 
 html.is-mobile .mg-toast {

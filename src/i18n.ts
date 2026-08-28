@@ -74,8 +74,17 @@ const KO = {
   deleteFailBody: (label: string) =>
     `'${label}'을(를) 삭제할 수 없습니다.<br>포트폴리오가 이 항목을 사용 중입니다.`,
 
+  /* --- 업데이트 알림 --- */
+  updApp: '업데이트 알림',
+  updTitle: '업데이트 소식',
+  updDetails: '전체 보기',
+  updNew: 'NEW',
+  updMore: (n: number) => `이전 소식 ${n}건`,
+  updMoreItems: (n: number) => `그 외 ${n}가지`,
+
   menuGames: '게임',
   menuReadme: '소개 (README.txt)',
+  menuUpdates: '업데이트 소식',
   menuEmail: '이메일 보내기',
 
   mHome: '홈으로',
@@ -174,8 +183,17 @@ const EN: typeof KO = {
   deleteFailBody: (label: string) =>
     `'${label}' can't be deleted.<br>This portfolio is currently using the item.`,
 
+  /* --- Update notification --- */
+  updApp: 'Site update',
+  updTitle: "What's new",
+  updDetails: 'See all',
+  updNew: 'NEW',
+  updMore: (n: number) => `${n} earlier ${n === 1 ? 'post' : 'posts'}`,
+  updMoreItems: (n: number) => `${n} more`,
+
   menuGames: 'Games',
   menuReadme: 'About (README.txt)',
+  menuUpdates: "What's new",
   menuEmail: 'Send email',
 
   mHome: 'Home',
