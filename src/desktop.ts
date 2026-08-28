@@ -5,7 +5,14 @@ import { startMinigame, stopMinigame } from './minigames.ts';
 import { EDGE_PAD, iconCell, taskbarH } from './layout.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
 import { showUpdateToast, updatesBodyHtml, updateIcon } from './updates.ts';
-import { guestbookBodyHtml, wireGuestbook, suggestIcon } from './guestbook.ts';
+import {
+  guestbookBodyHtml,
+  guestbookTitle,
+  wireGuestbook,
+  suggestIcon,
+  GB_ADMIN,
+  GB_WIDTH,
+} from './guestbook.ts';
 import notepadIcon from './notepad-icon.svg';
 import trashIcon from './trash-icon.svg';
 
@@ -216,14 +223,15 @@ function openUpdatesWindow(newIds: string[] = []): void {
   });
 }
 
-/** 익명 건의함 창 — 여기서 보낸 글은 개발자에게만 간다 */
+/** 익명 건의함 창 — 여기서 보낸 글은 개발자에게만 간다.
+    ?admin=<키> 로 들어왔다면 같은 창이 받은 의견 목록으로 열린다 */
 function openGuestbook(): void {
   wireGuestbook(
     createWindow({
       id: 'guestbook',
-      title: TX.gbTitle,
+      title: guestbookTitle(),
       iconUrl: suggestIcon,
-      width: 440,
+      width: GB_WIDTH,
       bodyHtml: guestbookBodyHtml(),
     }),
   );
@@ -611,5 +619,7 @@ buildStartMenu();
 initTaskbarRight();
 startClock();
 initResponsiveLayout();
+// 관리자 링크로 들어왔으면 받은 의견을 바로 펼쳐 준다
+if (GB_ADMIN) openGuestbook();
 // 바탕화면이 다 그려진 뒤, 아직 못 본 소식이 있으면 오른쪽 아래에서 알림이 올라온다
 showUpdateToast({ onDetails: openUpdatesWindow });

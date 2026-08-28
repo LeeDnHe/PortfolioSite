@@ -4,7 +4,13 @@ import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame } from './minigames.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
 import { showUpdateToast, updatesBodyHtml } from './updates.ts';
-import { guestbookBodyHtml, wireGuestbook, suggestIcon } from './guestbook.ts';
+import {
+  guestbookBodyHtml,
+  guestbookTitle,
+  wireGuestbook,
+  suggestIcon,
+  GB_ADMIN,
+} from './guestbook.ts';
 import notepadIcon from './notepad-icon.svg';
 
 /* ================= 폰 셸 ================= */
@@ -170,11 +176,12 @@ function openUpdatesApp(newIds: string[] = []): void {
   });
 }
 
-/** 익명 건의함 — 여기서 보낸 글은 개발자에게만 간다 */
+/** 익명 건의함 — 여기서 보낸 글은 개발자에게만 간다.
+    ?admin=<키> 로 들어왔다면 같은 페이지가 받은 의견 목록으로 열린다 */
 function openGuestbookApp(): void {
   openAppPage({
     id: 'guestbook',
-    title: TX.gbTitle,
+    title: guestbookTitle(),
     bodyHtml: guestbookBodyHtml(),
     onCreate: wireGuestbook,
   });
@@ -274,5 +281,7 @@ function startClock(): void {
 
 startClock();
 
+// 관리자 링크로 들어왔으면 받은 의견을 바로 펼쳐 준다
+if (GB_ADMIN) openGuestbookApp();
 // 홈 화면이 다 그려진 뒤, 아직 못 본 소식이 있으면 상태바 아래로 알림이 내려온다
 showUpdateToast({ onDetails: openUpdatesApp });

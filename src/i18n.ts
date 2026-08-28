@@ -104,6 +104,19 @@ const KO = {
   gbMineTitle: '내가 보낸 의견',
   gbMineHint: '이 브라우저에만 남는 기록이에요',
 
+  /* --- 건의함 (관리자) --- */
+  gbAdminTitle: '건의함 (관리자)',
+  gbAdminCount: (n: number) => `받은 의견 ${n}건`,
+  gbAdminLoading: '불러오는 중…',
+  gbAdminEmpty: '아직 받은 의견이 없어요',
+  gbAdminHint: '주소창에서 키는 지웠어요 — 다시 보려면 저장해 둔 주소로 들어오세요',
+  gbAdminBadKey: '관리자 키가 맞지 않아요',
+  gbAdminNoKey: 'Netlify에 GUESTBOOK_KEY 환경변수를 먼저 설정해 주세요',
+  gbRefresh: '새로고침',
+  gbDelete: '삭제',
+  gbDeleteConfirm: '정말 삭제?',
+  gbDeleteFailed: '삭제 실패',
+
   menuGames: '게임',
   menuReadme: '소개 (README.txt)',
   menuUpdates: '업데이트 소식',
@@ -235,6 +248,19 @@ const EN: typeof KO = {
   gbOffline: "Can't reach the suggestion box server (running locally, or you're offline)",
   gbMineTitle: 'What you’ve sent',
   gbMineHint: 'Kept in this browser only',
+
+  /* --- Suggestion box (admin) --- */
+  gbAdminTitle: 'Suggestion box (admin)',
+  gbAdminCount: (n: number) => `${n} received`,
+  gbAdminLoading: 'Loading…',
+  gbAdminEmpty: 'Nothing has come in yet',
+  gbAdminHint: 'The key is cleared from the address bar — reopen with your saved link',
+  gbAdminBadKey: 'That admin key doesn’t match',
+  gbAdminNoKey: 'Set the GUESTBOOK_KEY environment variable on Netlify first',
+  gbRefresh: 'Refresh',
+  gbDelete: 'Delete',
+  gbDeleteConfirm: 'Really delete?',
+  gbDeleteFailed: 'Delete failed',
 
   menuGames: 'Games',
   menuReadme: 'About (README.txt)',
