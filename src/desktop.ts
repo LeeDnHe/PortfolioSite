@@ -5,6 +5,7 @@ import { startMinigame, stopMinigame } from './minigames.ts';
 import { EDGE_PAD, iconCell, taskbarH } from './layout.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
 import { showUpdateToast, updatesBodyHtml, updateIcon } from './updates.ts';
+import { guestbookBodyHtml, wireGuestbook, suggestIcon } from './guestbook.ts';
 import notepadIcon from './notepad-icon.svg';
 import trashIcon from './trash-icon.svg';
 
@@ -215,6 +216,19 @@ function openUpdatesWindow(newIds: string[] = []): void {
   });
 }
 
+/** 익명 건의함 창 — 여기서 보낸 글은 개발자에게만 간다 */
+function openGuestbook(): void {
+  wireGuestbook(
+    createWindow({
+      id: 'guestbook',
+      title: TX.gbTitle,
+      iconUrl: suggestIcon,
+      width: 440,
+      bodyHtml: guestbookBodyHtml(),
+    }),
+  );
+}
+
 function showMessageBox(title: string, messageHtml: string): void {
   document.querySelector('.msgbox-backdrop')?.remove();
   const backdrop = document.createElement('div');
@@ -259,6 +273,13 @@ const ITEMS: DesktopItem[] = [
     iconUrl: notepadIcon,
     deletable: true,
     open: openReadme,
+  },
+  {
+    id: 'guestbook',
+    label: TX.gbTitle,
+    iconUrl: suggestIcon,
+    deletable: true,
+    open: openGuestbook,
   },
   {
     id: 'trash',
@@ -330,8 +351,7 @@ function renderIcons(): void {
     icon.innerHTML =
       `<img src="${item.iconUrl}" class="folder-icon" alt="" aria-hidden="true" draggable="false">` +
       `<span class="icon-label">${item.label}</span>`;
-    // 마우스는 바탕화면답게 더블클릭, 터치는 일반 모바일처럼 한 번 탭 (아래 포인터 처리)
-    icon.addEventListener('dblclick', () => item.open());
+    // 마우스·터치 모두 한 번 클릭(탭)으로 실행한다 (아래 포인터 처리)
     icon.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') item.open();
     });
@@ -381,8 +401,8 @@ function makeIconDraggable(icon: HTMLElement, item: DesktopItem): void {
       icon.removeEventListener('pointercancel', onUp);
       icon.classList.remove('dragging');
       if (!moved) {
-        // 터치는 탭 한 번으로 실행 (모바일 기본 동작)
-        if (touch && ev.type === 'pointerup') item.open();
+        // 마우스도 모바일처럼 한 번 클릭이면 바로 실행한다
+        if (ev.type === 'pointerup') item.open();
         return;
       }
       if (item.deletable && isOverTrash(icon)) {
@@ -484,6 +504,9 @@ function buildStartMenu(): void {
     <button class="menu-item" data-action="updates">
       <img src="${updateIcon}" alt=""><span>${TX.menuUpdates}</span>
     </button>
+    <button class="menu-item" data-action="guestbook">
+      <img src="${suggestIcon}" alt=""><span>${TX.menuGuestbook}</span>
+    </button>
     <a class="menu-item" href="${PROFILE.github}" target="_blank" rel="noreferrer">
       <span class="menu-glyph">↗</span><span>GitHub</span>
     </a>
@@ -498,6 +521,7 @@ function buildStartMenu(): void {
     if (gameId) openGameWindow(GAMES.find((g) => g.id === gameId)!);
     if (btn.dataset.action === 'readme') openReadme();
     if (btn.dataset.action === 'updates') openUpdatesWindow();
+    if (btn.dataset.action === 'guestbook') openGuestbook();
     closeStartMenu();
   });
 

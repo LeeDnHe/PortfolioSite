@@ -4,6 +4,7 @@ import { buildGameBody, wireGameTabs } from './game-body.ts';
 import { startMinigame } from './minigames.ts';
 import { TX, createLangSwitcher } from './i18n.ts';
 import { showUpdateToast, updatesBodyHtml } from './updates.ts';
+import { guestbookBodyHtml, wireGuestbook, suggestIcon } from './guestbook.ts';
 import notepadIcon from './notepad-icon.svg';
 
 /* ================= 폰 셸 ================= */
@@ -169,6 +170,16 @@ function openUpdatesApp(newIds: string[] = []): void {
   });
 }
 
+/** 익명 건의함 — 여기서 보낸 글은 개발자에게만 간다 */
+function openGuestbookApp(): void {
+  openAppPage({
+    id: 'guestbook',
+    title: TX.gbTitle,
+    bodyHtml: guestbookBodyHtml(),
+    onCreate: wireGuestbook,
+  });
+}
+
 interface MobileApp {
   id: string;
   label: string;
@@ -190,6 +201,12 @@ const DOCK_APPS: MobileApp[] = [
     label: TX.mAbout,
     tileHtml: `<span class="m-tile"><img src="${notepadIcon}" alt=""></span>`,
     open: openReadmeApp,
+  },
+  {
+    id: 'guestbook',
+    label: TX.gbTitle,
+    tileHtml: `<span class="m-tile"><img src="${suggestIcon}" alt=""></span>`,
+    open: openGuestbookApp,
   },
   {
     id: 'github',

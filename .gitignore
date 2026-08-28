@@ -7,3 +7,7 @@ dist
 .netlify
 # netlify dev(Edge Functions 런타임)가 생성하는 로컬 아티팩트
 deno.lock
+
+# 로컬 개발용 환경변수 (건의함 관리자 키 등) — 커밋하지 않는다
+.env
+.env.*

@@ -24,6 +24,21 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-08-29-guestbook',
+    date: '2026-08-29',
+    title: { ko: '건의함이 생겼어요', en: 'There’s a suggestion box now' },
+    items: {
+      ko: [
+        '바탕화면(폰에서는 아래 독)의 "건의함"에서 익명으로 의견을 보낼 수 있어요',
+        '글은 개발자에게만 전달되고, 다른 방문자에게는 보이지 않아요',
+      ],
+      en: [
+        'Send anonymous feedback from the “Suggestion box” on the desktop — in the dock on phones',
+        'Only I read it; nothing you send is shown to other visitors',
+      ],
+    },
+  },
+  {
     id: '2026-08-29-notify',
     date: '2026-08-29',
     title: { ko: '업데이트 알림이 생겼어요', en: 'Update notifications' },
