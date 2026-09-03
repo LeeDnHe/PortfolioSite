@@ -8,7 +8,9 @@ export function buildGameBody(game: GameEntry): string {
   if (game.playUrl) {
     mainBtn = `<a class="btn-play" href="${game.playUrl}" target="_blank" rel="noreferrer">${TX.btnPlay}</a>`;
   } else if (game.downloadUrl) {
-    mainBtn = `<a class="btn-play" href="${game.downloadUrl}" download>${TX.btnDownload}</a>`;
+    // 설치 파일 종류에 맞는 라벨 — 모바일은 APK, PC는 Windows 압축 파일
+    const label = game.platform === 'mobile' ? TX.btnDownload : TX.btnDownloadWin;
+    mainBtn = `<a class="btn-play" href="${game.downloadUrl}" download>${label}</a>`;
   } else {
     mainBtn = `<span class="btn-play disabled">${TX.btnWip}</span>`;
   }

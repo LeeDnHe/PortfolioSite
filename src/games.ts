@@ -642,20 +642,271 @@ const RAW_GAMES: RawGameEntry[] = [
   },
   {
     id: 'floppy-144',
-    title: { ko: 'Floppy-144', en: 'Floppy-144' },
+    title: { ko: '플로피 (FLOPPY)', en: 'FLOPPY' },
     tagline: { ko: '1.44MB 공모전 출품작', en: 'A 1.44MB game jam entry' },
     description: {
       ko:
-        '게임 전체를 플로피 디스크 한 장 분량인 1.44MB 안에 담아야 하는 "1.44MB 공모전" 출품작입니다. ' +
-        '용량 제한이라는 극한의 조건 속에서 아이디어를 압축해 내는 게임이며, 현재 제작 중입니다.',
+        '"1.44MB 공모전 출품작"으로서 공모전 자체에 영감을 받아, 플레이어의 몸이 곧 인벤토리이며 ' +
+        '능력과 화물을 싣고 총 14건의 배달을 진행합니다. 자리에서 움직이지 못하는 기계들의 사연과 편지를 ' +
+        '서로 전달해 주는 역할을 하는 탑다운 배달 서사 게임입니다. ' +
+        '게임 안에서 들고 다닐 수 있는 용량과 게임 자체의 용량 모두 1.44MB로 제한됩니다.',
       en:
-        'An entry for the "1.44MB" jam, where the entire game has to fit inside a single floppy disk — just 1.44MB. ' +
-        'A game about compressing ideas under an extreme size constraint. Currently in production.',
+        'An entry for the "1.44MB" contest, inspired by the contest itself: your body is your inventory, ' +
+        'you load abilities and cargo, and you make 14 deliveries in all. A top-down narrative delivery game ' +
+        'about carrying the stories and letters of machines that can never leave their spot. ' +
+        'Both what you can carry in the game and the game itself are capped at 1.44MB.',
     },
     platform: 'pc',
     icon: floppy144Icon,
     playUrl: '',
+    downloadUrl: '/floppy-144.zip',
     year: '2026',
+    details: {
+      facts: [
+        {
+          label: { ko: '장르', en: 'Genre' },
+          value: {
+            ko: '탑다운 실시간 액션 · 유한 캠페인 (배달 14건, 20~30분)',
+            en: 'Top-down real-time action · finite campaign (14 deliveries, 20–30 min)',
+          },
+        },
+        {
+          label: { ko: '플랫폼', en: 'Platform' },
+          value: {
+            ko: 'PC — Windows 10/11 (64비트) 단독 실행 파일, 설치·런타임 불필요',
+            en: 'PC — Windows 10/11 (64-bit) standalone executable, no installer or runtime',
+          },
+        },
+        {
+          label: { ko: '개발', en: 'Development' },
+          value: {
+            ko: '1인 개발 · 2026.07.15 – 2026.09.04 (7주)',
+            en: 'Solo · Jul 15 – Sep 4, 2026 (7 weeks)',
+          },
+        },
+        {
+          label: { ko: '용량', en: 'Size' },
+          value: {
+            ko: '1.28MB — 그래픽·글꼴·음악·효과음 전부 포함 (한도 1.44MB)',
+            en: '1.28MB — graphics, font, music and SFX included (limit 1.44MB)',
+          },
+        },
+        {
+          label: { ko: '기술', en: 'Tech' },
+          value: {
+            ko: 'C · Win32 API · 자작 소프트웨어 렌더러 · waveOut 믹서 · 384×216 ×3',
+            en: 'C · Win32 API · hand-written software renderer · waveOut mixer · 384×216 ×3',
+          },
+        },
+        {
+          label: { ko: '지원 언어', en: 'Languages' },
+          value: { ko: '한국어', en: 'Korean' },
+        },
+      ],
+      awards: {
+        ko: ['2P GAME ARCADE "1.44MB GAME_DEV CONTEST" 출품 (2026.09)'],
+        en: ['Submitted to the 2P GAME ARCADE "1.44MB GAME_DEV CONTEST" (Sep 2026)'],
+      },
+      background: {
+        ko: [
+          '"압축 해제 후 1.44MB 이하. 실행 파일과 런타임 전부 포함." 공모전 규정을 처음 읽었을 때, ' +
+            '용량 제한이 제약이 아니라 소재로 보였습니다. 게임 자체가 플로피 한 장에 들어가야 한다면 ' +
+            '주인공도 플로피 한 장이어야 하지 않을까. 그리고 그 플로피를 플레이어로 사용한다면, ' +
+            '용량을 단순한 숫자가 아니라 게임의 핵심 로직으로 사용할 수 있지 않을까?',
+          '"주인공은 플로피"라는 발상은 이 공모전에서 누구나 떠올릴 법한 컨셉이라는 것도 알고 있었습니다. ' +
+            '그래서 차별점을 컨셉이 아니라 시스템에 두기로 했습니다. 배달 화물과 능력 파일이 같은 1440KB를 나눠 쓰고, ' +
+            '세 번 피격되면 최대 용량이 영구히 줄어듭니다. 잃는 것은 점수가 아니라 용량 그 자체입니다.',
+          '1.44MB라는 작은 용량으로 게임을 만드는 게 생소했으나 재밌는 도전으로 느껴져 C로 시도해 보았고, ' +
+            '첫 주에 Win32 렌더러로 구현해 보니 104KB라는 작은 값이 나왔습니다. "이거 가능하겠다"라는 생각과 함께 ' +
+            '7주짜리 작은 도전이 시작됐습니다.',
+        ],
+        en: [
+          '"1.44MB or less after extraction, executable and runtime included." When I first read the contest rules, ' +
+            'the size limit looked less like a constraint and more like a premise. If the whole game has to fit on one floppy, ' +
+            'shouldn’t the protagonist be a floppy too? And if that floppy is the player, couldn’t capacity be the core ' +
+            'logic of the game rather than just a number?',
+          'I also knew that "the hero is a floppy" is the concept everyone in this contest would think of. So I put the ' +
+            'difference in the systems instead: delivery cargo and ability files share the same 1440KB, and three hits ' +
+            'permanently shrink your maximum capacity. What you lose is not a score — it is capacity itself.',
+          'Making a game in just 1.44MB was unfamiliar, but it felt like a fun challenge, so I tried it in C. In the first ' +
+            'week a Win32 renderer came out at only 104KB, and with the thought "this could actually work," a small ' +
+            'seven-week challenge began.',
+        ],
+      },
+      statement: {
+        ko: [
+          '"용량이 곧 핵심 로직이고, 능력이고, 점수다"라는 통합이 이 게임의 뼈대입니다. 대시·도약·펄스·보호막 같은 ' +
+            '아이템들이 각각 96KB, 128KB, 220KB, 340KB짜리 파일이라 전부 들게 되면 폐품을 주울 수 없거나 너무 무거워져서 ' +
+            '기동성이 떨어지고, 이 때문에 다음 의뢰서에 적힌 화물 크기를 보고 무엇을 싣고 무엇을 버릴지 미리 정해야 합니다. ' +
+            '길에서 주운 회수품은 팔면 돈이 되지만 들고 있는 동안은 짐일 뿐이라, 욕심을 부릴수록 위험해지는 구조를 ' +
+            '용량 하나로 만들고 싶었습니다.',
+          '기억도 같은 규칙 위에 얹었습니다. 배달을 마친 의뢰서는 자동으로 지워지지만, 이야기의 전환점 이후에는 1KB를 내고 ' +
+            '기록으로 남길 수 있습니다. 남긴 기억은 정해진 위험 하나를 구간마다 한 번 막아 주고, 마지막 화면에는 그 기억들이 ' +
+            'DIR A:\\ 목록으로 그대로 찍혀 나옵니다. 배드섹터로 잃은 자리는 ?????.??? [BAD]라는 빈칸으로 남습니다. ' +
+            '"내가 나른 것들이, 곧 내가 된다"는 문장을 시스템으로 보여주고 싶었습니다.',
+        ],
+        en: [
+          '"Capacity is the core logic, the abilities and the score" — that unity is the backbone of this game. Items like ' +
+            'dash, jump, pulse and shield are files of 96KB, 128KB, 220KB and 340KB, so carrying them all means you cannot ' +
+            'pick up salvage, or you get so heavy that you lose mobility. That is why you have to read the cargo size on the ' +
+            'next request and decide in advance what to load and what to drop. Salvage picked up on the road sells for money ' +
+            'but is just baggage while you carry it — I wanted greed to turn into danger through capacity alone.',
+          'Memory sits on the same rule. A finished request is deleted automatically, but after the turning point you can pay 1KB ' +
+            'to keep it as a record. A kept memory blocks one specific hazard once per leg, and the final screen is a DIR A:\\ ' +
+            'listing where those memories are printed exactly as they are. Slots lost to bad sectors show up as ?????.??? [BAD] — ' +
+            'holes in the list. I wanted the line "what I carried became who I am" to be a system, not just a sentence.',
+        ],
+      },
+      devComment: {
+        ko: [
+          '세계관은 "기계들의 세상, 사람은 없다"로 잡았습니다. 기계는 평생 한 자리에 설치되어 있고 저장 매체만 움직일 수 있어서, ' +
+            '플로피가 이 세상의 우편배달부가 됩니다. 옆방인데 한 번도 만난 적 없는 사이, 전원이 꺼지면 사라지는 기억, ' +
+            '폐기 전에 남기는 백업 같은 기계의 특성을 사람의 이야기로 옮기되, "기계를 사람으로 바꿔 읽어도 성립하면 통과"라는 ' +
+            '기준으로 각각 이야기의 짧은 대본을 세웠습니다.',
+          '플로피가 의뢰들을 수행하며 감정을 배워 나가는 과정을 통해 "스쳐 지나가는 모든 것들이 나를 만든다"는 ' +
+            '저의 생각을 전달하고 싶었습니다. 다만 허용된 용량이 적어 많은 이야기를 적어 두지 못한 점이 아쉬워, ' +
+            '언젠가는 서사가 위주가 되어 더 많은 메시지를 전달하는 내러티브 게임을 만들고 싶습니다.',
+        ],
+        en: [
+          'The setting is "a world of machines, with no people." Machines are installed in one spot for life and only storage ' +
+            'media can move, which makes a floppy the postal worker of this world. Neighbours who have never met, memory that ' +
+            'vanishes when the power goes out, a backup left before disposal — I translated machine traits into human stories, ' +
+            'and built each short script on one test: it passes only if it still works when you swap the machine for a person.',
+          'Through a floppy that learns emotions while carrying out its requests, I wanted to convey my own belief that ' +
+            '"everything that passes through me makes me who I am." My one regret is that the tiny size budget left little room ' +
+            'for story, so someday I want to make a narrative-driven game that carries far more of its message.',
+        ],
+      },
+      versions: [
+        {
+          version: 'v1.0',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '공모전 제출 빌드', en: 'Contest submission build' },
+          current: true,
+          changes: {
+            ko: [
+              '도착지 9곳과 카운터, 밤거리 배경 그림 11장을 추가하고, 도착하면 대화에 앞서 무대를 잠시 보여주는 연출을 추가',
+              '자석을 추적형으로 변경: 일정 범위 안에 들어오면 쫓아오고, 펄스(ZAP)에 맞으면 5초 동안 멈춘다',
+              '대시(DASH)와 도약(JUMP)을 각각 10회·5회 횟수제로 변경하고, 기억의 위험 상쇄가 실제로 맞는 순간에만 발동하도록 수정',
+              '10구간을 전광판을 경유하는 구조로 재편: 전반은 빈 몸으로 달리고, 전광판 도트를 만난 뒤에야 화물이 실린다',
+              '회수품 36종에 이름과 한 줄 설명을 붙이고, 조작법 안내와 의뢰 단위 저장 기능을 추가',
+              '마지막 배달 곡을 종소리가 울리는 송년 곡으로 교체하고, 실행 파일에 플로피디스크 아이콘을 적용',
+              '최종 용량 1.28MB로 제출 (한도 1.44MB)',
+            ],
+            en: [
+              'Eleven painted backdrops (9 destinations, the counter, the night street) + a one-beat "arrival" shot before each dialogue',
+              'Magnets now chase: enter their radius and they follow; a ZAP pulse switches them off for 5 seconds',
+              'DASH and JUMP switched to limited uses (10 and 5) + memory counters now fire only at the moment a hazard would hit',
+              'Leg 10 rebuilt around a mid-route pickup: you run empty to the billboard and only take on cargo after meeting Dot',
+              'Names and one-line descriptions for all 36 salvage files + a controls manual + per-request saving',
+              'The final delivery track replaced with a New Year’s bell tune + a floppy-disk icon on the executable',
+              'Submitted at 1.28MB (limit 1.44MB)',
+            ],
+          },
+        },
+        {
+          version: 'v0.5',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: '소리 — 믹서와 트래커 음악', en: 'Sound — mixer & tracker music' },
+          changes: {
+            ko: [
+              '소리가 한 번에 하나만 나서 새 소리가 앞의 소리를 끊던 문제를 매 프레임 직접 섞는 자체 믹서로 해결 (효과음 8채널 + 음악 6채널 + 환경음 2겹)',
+              '샘플 기반 트래커 음악 도입: 악기 13종을 8비트 22050Hz 샘플로 담고, 카운터·동네·도시·외곽·최종·엔딩·타이틀 7곡을 작곡',
+              '환경음 4종(비·바람·기계음·팬)을 서로 다른 길이로 겹쳐 반복이 눈에 띄지 않게 구성',
+              '실패 화면의 버튼을 "재도전"으로, 메뉴의 "단축키"를 "조작법"으로 바꾸고 등록 카드 문구를 정리',
+              '대사가 다음 줄로 넘어갈 때 타자 효과가 다시 시작하도록 수정하고, 구간 대사와 의뢰문을 다듬음',
+            ],
+            en: [
+              'PlaySound only allowed one sound per process and cut off whatever was playing — replaced with a per-frame mixer on a single waveOut voice (8 SFX + 6 music + 2 ambient channels)',
+              'Sample-based tracker music: 13 instruments baked at 8-bit 22050Hz + 7 tracks (counter, town, city, outskirts, final, ending, title)',
+              'Four ambient loops (rain, wind, hum, fan) at deliberately mismatched lengths so the repeat never lines up',
+              'Failure button relabelled "Retry", shortcuts renamed "Controls", registration card reworded',
+              'Typing effect restarts when the line changes + a polish pass over leg dialogue and request texts',
+            ],
+          },
+        },
+        {
+          version: 'v0.4',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: '이야기 완성 — 인트로부터 READ-ONLY까지', en: 'The story, start to READ-ONLY' },
+          changes: {
+            ko: [
+              '인트로(마더의 인사 → 등록증)와 타이틀 메뉴, 엔딩의 DIR A:\\ 아카이브 화면과 READ-ONLY 마지막 장면 구현',
+              '기억 보관과 위험 상쇄 5쌍 추가: 남겨 둔 의뢰서 기억이 물·먼지·열·자석·프레스를 구간마다 한 번씩 막아 준다',
+              '맵을 62px 방 격자로 재설계: 모든 방을 하나로 잇고, 생성한 뒤 실제로 걸어 보게 해서 반드시 깰 수 있음을 보증',
+              '카운터에 돌아가지 않고 현장에서 바로 다음 의뢰를 받는 역방향 구간(7·9·11) 추가',
+              '한글이 10px 이하에서 뭉개져서 화면을 320×180에서 384×216으로 키우고 레이아웃을 재배치',
+              '효과음 전면 재작업과 소리 크기 설정(톱니 버튼), 실행 파일 옆에 생기는 12바이트 세이브 파일',
+              '엔딩에서 통신이 개통된 뒤 채팅이 흐르는 연출 확장, 비트맵 폰트 485자 → 565자',
+            ],
+            en: [
+              'Intro (Mother’s greeting → registration card), title menu, the DIR A:\\ ending archive and the READ-ONLY final cut',
+              'Kept memories + 5 counter pairs: a saved request blocks water, dust, heat, magnets or the press once per leg',
+              'Map redesigned as a 62px room grid: linked by a spanning tree, then walked at body size after generation to guarantee it can be cleared',
+              'Direct-pickup / reversed legs (7, 9, 11) that skip the counter',
+              'Korean glyphs smeared below 10px, so the screen grew from 320×180 to 384×216 with a relaid layout',
+              'Full SFX rework + a volume setting (gear icon) + a 12-byte save file next to the exe',
+              'Post-launch chat traffic sequence extended, subset font 485 → 565 glyphs',
+            ],
+          },
+        },
+        {
+          version: 'v0.3',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: '캠페인 14구간과 대화', en: '14-leg campaign & dialogue' },
+          changes: {
+            ko: [
+              '캠페인 14구간의 뼈대 구현: 구간별 고정 의뢰, 물·프레스 위험, 폭이 다른 맵, 세로 스크롤 구간',
+              '카메라 추종과 가로 4화면 너비의 맵, 목적지에 가까워질수록 색이 물드는 경로 연출',
+              '대화 UI와 한글 비트맵 폰트: 글자가 뭉개지던 문제를 GDI 비트맵에서 글자를 직접 추출하는 방식으로 해결',
+              '수신 기계 14종의 개별 픽셀아트와 장소 배경, 동료 배달부 마빈이 대화 장면에 나란히 등장',
+              '대사 타자 효과와 기계마다 다른 말소리, 방향키·마우스로 고르는 상점 메뉴',
+              '대사 상자의 순서·줄 수·폭을 한눈에 확인하는 검사 도구 추가',
+            ],
+            en: [
+              '14-leg campaign skeleton: fixed requests, water/press hazards, variable-width maps, a vertical-scroll leg',
+              'Camera follow + 4-screen-wide maps + a route gradient that tints the palette as you near the destination',
+              'Dialogue UI + a Korean subset bitmap font, switched to extracting glyphs from GDI bitmap strikes',
+              'Individual pixel art for all 14 receiving machines + location backdrops, Marvin appears side by side in dialogue',
+              'Typing effect with per-machine voices + a cursor-driven shop menu (arrow keys or mouse)',
+              'dlgmap tool that dumps dialogue box order, line counts and widths',
+            ],
+          },
+        },
+        {
+          version: 'v0.2',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: '수직 슬라이스', en: 'Vertical slice' },
+          changes: {
+            ko: [
+              '편도 1구간의 전체 흐름 구현: 의뢰 수주 → 주행 → 도착 정산',
+              '장르를 실시간 탑다운 액션으로 최종 확정하고, 대안으로 두었던 턴제 격자 방식을 폐기',
+            ],
+            en: [
+              'One full one-way leg: take a request → run the leg → settle on arrival',
+              'Genre locked to real-time top-down action; the turn-based grid fallback (plan B) dropped',
+            ],
+          },
+        },
+        {
+          version: 'v0.1',
+          date: { ko: '2026.07', en: 'Jul 2026' },
+          title: { ko: '기획과 스택 실측', en: 'Design & stack measurement' },
+          changes: {
+            ko: [
+              '기획서와 스토리·세계관 문서 작성: 인벤토리가 곧 몸, 돌아오지 않는 편도 여정, 3타격 배드섹터',
+              '직접 만든 Win32 렌더러와 raylib로 같은 프로토타입을 만들어 크기 실측 (104KB 대 785KB) → Win32 확정',
+              '실측용 프로토타입을 본편 뼈대(창·루프·프레임버퍼·입력·사운드)로 발전',
+            ],
+            en: [
+              'Design doc + story/worldbuilding doc: inventory = body, one-way chain, three-hit bad sectors',
+              'Same probe written on a hand-rolled Win32 renderer and on raylib, measured 104KB vs 785KB → Win32 chosen',
+              'Probe promoted to the game skeleton (window, loop, framebuffer, input, sound)',
+            ],
+          },
+        },
+      ],
+    },
   },
 ];
 

@@ -24,6 +24,23 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-09-04-floppy',
+    date: '2026-09-04',
+    title: { ko: '플로피 (FLOPPY) 공개 · 1.44MB 공모전 출품', en: 'FLOPPY is out · 1.44MB contest entry' },
+    items: {
+      ko: [
+        '주인공이 1.44MB 플로피디스크인 탑다운 배달 액션 게임 "플로피"를 공모전에 제출했어요',
+        '바탕화면의 플로피 아이콘에서 Windows용 실행 파일(1.3MB)을 내려받을 수 있어요',
+        '만들게 된 배경과 7주 개발 기록을 "자세히" · "이전 버전" 탭에 정리했어요',
+      ],
+      en: [
+        '"FLOPPY", a top-down delivery action game where you play a 1.44MB floppy disk, has been submitted to the contest',
+        'Grab the Windows build (1.3MB) from the floppy icon on the desktop',
+        'Why I made it and the 7-week dev log are in the "Details" and "Previous versions" tabs',
+      ],
+    },
+  },
+  {
     id: '2026-08-29-guestbook',
     date: '2026-08-29',
     title: { ko: '건의함이 생겼어요', en: 'There’s a suggestion box now' },
