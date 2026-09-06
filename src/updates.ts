@@ -24,6 +24,21 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-09-06-folder-escape-v09',
+    date: '2026-09-06',
+    title: { ko: '폴더 탈출 v0.9 패치노트', en: 'Folder Escape v0.9 patch notes' },
+    items: {
+      ko: [
+        '블록5 「쥐덫」이 완성됐어요: 커서가 쥐가 되는 Mouse와 종합 스테이지 Mousetrap.zip',
+        '클리어 등급(일반/퍼펙트/엑스트라)과 정리된 도전과제 20종을 "이전 버전" 탭에 적어 두었어요',
+      ],
+      en: [
+        'Block 5 "Mousetrap" is complete: Mouse, where the cursor becomes a rat, and the Mousetrap.zip synthesis stage',
+        'Clear ranks (normal / perfect / extra) and the trimmed set of 20 achievements are in the “Previous versions” tab',
+      ],
+    },
+  },
+  {
     id: '2026-09-04-floppy',
     date: '2026-09-04',
     title: { ko: '플로피 (FLOPPY) 공개 · 1.44MB 공모전 출품', en: 'FLOPPY is out · 1.44MB contest entry' },

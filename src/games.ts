@@ -111,7 +111,6 @@ const RAW_GAMES: RawGameEntry[] = [
     },
     year: '2026',
     details: {
-      github: 'https://github.com/LeeDnHe/Folder-escape',
       facts: [
         {
           label: { ko: '장르', en: 'Genre' },
@@ -131,8 +130,8 @@ const RAW_GAMES: RawGameEntry[] = [
         {
           label: { ko: '분량', en: 'Length' },
           value: {
-            ko: '튜토리얼 + 본편 25개 스테이지 (60~80분)',
-            en: 'Tutorial + 25 main stages (60–80 min)',
+            ko: '튜토리얼 + 본편 5블록 25개 스테이지 + 다음 블록 씨앗 3개 (60~90분)',
+            en: 'Tutorial + 25 main stages in 5 blocks + 3 seed stages for the next block (60–90 min)',
           },
         },
         {
@@ -236,30 +235,41 @@ const RAW_GAMES: RawGameEntry[] = [
       },
       versions: [
         {
-          version: 'v0.8',
-          date: { ko: '2026.08', en: 'Aug 2026' },
-          title: { ko: '스테이지 25개로 확장', en: 'Expanded to 25 stages' },
+          version: 'v0.9',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '블록5 「쥐덫」 완성 & 클리어 등급', en: 'Block 5 "Mousetrap" complete & clear ranks' },
           current: true,
           changes: {
             ko: [
-              '스테이지를 두 개 추가해서 전체 25개 스테이지로 확장',
-              '신규 종합 스테이지 「FamilyAlbum.zip」(Stage 15): 앞선 네 스테이지를 하나로 합친 zip 스테이지로 완성',
-              '신규 스테이지 「MultiWindow」(Stage 25): 바로가기가 다른 창으로 통하는 포털이 되는 다중 창 퍼즐',
-              '2단계 힌트를 토큰 방식으로 변경: 처음에 한 번 주어지고, zip 스테이지를 클리어할 때마다 한 번씩 충전',
-              '메모장(.txt)으로 파라미터를 편집할 때 저장 단계를 거치도록 바꿔서, 수정한 값이 언제 적용되는지 분명하게 표시',
-              '남아 있던 이모지 아이콘을 모두 SVG로 교체하고, 도전과제 전용 배지 세트를 추가',
-              '캐릭터가 이동하는 동안 들어온 명령은 무시하도록 수정',
-              '게임 안에 나오는 한국어 문구를 전반적으로 다시 정리',
+              '스테이지 「Mouse」, 「Mousetrap.zip」 추가 — 블록5 「쥐덫」 완성, 전체 28개 스테이지',
+              '도전과제 20종으로 축소 및 업데이트',
+              '퍼펙트 클리어, 엑스트라 클리어 추가 — 스테이지마다 기준 액션 수 이하로 깨면 등급 표시',
+              '이모지를 모두 자체 SVG 아이콘으로 교체',
             ],
             en: [
-              'Two more stages, bringing the game to 25 stages in total',
-              'New synthesis stage "FamilyAlbum.zip" (Stage 15): a zip stage that folds the previous four stages into one',
-              'New stage "MultiWindow" (Stage 25): a multi-window puzzle where shortcuts become portals into other windows',
-              'Second-tier hints now run on tokens: one to start with, and one more every time you clear a zip stage',
-              'Editing parameters in Notepad (.txt) now goes through an explicit save step, so it is clear when a value takes effect',
-              'Every remaining emoji icon replaced with SVG, plus a dedicated badge set for achievements',
-              'Commands issued while the character is moving are now ignored',
-              'A full pass over the Korean player-facing copy',
+              'New stages "Mouse" and "Mousetrap.zip" — block 5 "Mousetrap" complete, 28 stages in total',
+              'Achievements trimmed and updated to 20',
+              'Perfect and Extra clears added — beat a stage under its par action count to earn the rank',
+              'Every emoji replaced with hand-drawn SVG icons',
+            ],
+          },
+        },
+        {
+          version: 'v0.8',
+          date: { ko: '2026.08', en: 'Aug 2026' },
+          title: { ko: '스테이지 25개로 확장', en: 'Expanded to 25 stages' },
+          changes: {
+            ko: [
+              '스테이지 「FamilyAlbum.zip」, 「MultiWindow」 추가 — 전체 25개 스테이지',
+              '2단계 힌트를 토큰 방식으로 변경 (zip 스테이지 클리어 시 충전)',
+              '메모장(.txt) 파라미터 편집에 저장 단계 추가',
+              '한국어 문구 전반 정리',
+            ],
+            en: [
+              'New stages "FamilyAlbum.zip" and "MultiWindow" — 25 stages in total',
+              'Second-tier hints now run on tokens (recharged by clearing zip stages)',
+              'Explicit save step for Notepad (.txt) parameter edits',
+              'A full pass over the Korean copy',
             ],
           },
         },
@@ -269,21 +279,15 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: 'BIC 현장 전시 & 피드백 반영', en: 'BIC on-site build & feedback pass' },
           changes: {
             ko: [
-              '부스 회전율을 고려해 스테이지 10개짜리 현장 데모 빌드로 전시했고, 전시가 끝난 뒤에는 본편(전체 스테이지, 도전과제 23종)으로 복귀',
-              '모든 스테이지에서 이름 바꾸기가 대소문자를 구분하지 않도록 통일: 현장에서 관람객이 가장 많이 막히던 부분',
-              '튜토리얼에 스포트라이트 인트로를 추가하고, 진행이 막히는 소프트락 경로를 차단',
-              '되돌리기의 기준 위치를 파일 id에 고정하고, 기차가 탈선하면 되돌리기를 종료하도록 수정',
-              '오르골 창을 8×8 체스판으로 개편하고, 잠긴 출구를 이름으로 여는 열쇠 스테이지를 정비',
-              '보기(View) 메뉴를 개방하고, 붙여넣을 수 있는 자리를 끊긴 다리 아이콘으로 표시',
-              'Tauri 기반 데스크톱 빌드를 추가',
+              'BIC 현장 전시용 10스테이지 데모 빌드로 전시 후 본편 복귀',
+              '이름 바꾸기 대소문자 무시 — 현장에서 가장 많이 막히던 부분',
+              '튜토리얼 스포트라이트 인트로, 소프트락 차단, 되돌리기 정비',
+              'Tauri 데스크톱 빌드 추가',
             ],
             en: [
-              'Exhibited with a 10-stage on-site demo build sized for booth turnover — restored to the full game (all stages, 23 achievements) after the show',
-              'Renaming now matches case-insensitively in every stage — the single biggest place visitors got stuck on the floor',
-              'Spotlight intros in the tutorial + softlock paths blocked',
-              'Undo positions anchored to file ids + undo ends when the train derails',
-              'The music-box window reworked into an 8×8 chessboard + a pass over the key stages, where locked exits open by name',
-              'View menu opened up + paste targets marked with a broken-bridge icon',
+              'Exhibited a 10-stage demo build at BIC, then restored the full game',
+              'Renaming is now case-insensitive — the biggest sticking point on the floor',
+              'Tutorial spotlight intro, softlock paths blocked, undo cleaned up',
               'Added a Tauri desktop build',
             ],
           },
@@ -294,20 +298,16 @@ const RAW_GAMES: RawGameEntry[] = [
           title: { ko: 'BIC 온라인 전시 빌드', en: 'BIC online exhibition build' },
           changes: {
             ko: [
-              '스테이지를 「도입 4 + 종합 1」의 5단위 블록으로 재편: 앞에서 배운 조작을 반드시 다시 쓰게 되는 구조',
-              '신규 종합 스테이지 「Junction.zip」과 「Roundhouse.zip」 추가: 새로운 조작 없이 앞선 네 스테이지를 통합한 중간 보스 성격의 퍼즐',
-              '신규 스테이지 「Defrag」 추가: 디스크 조각 모음을 소재로 삼은 퍼즐',
-              '도전과제 22종과 블루스크린 연출을 추가',
-              '모든 스테이지에 2단계 힌트를 추가하고, 튜토리얼에서 힌트 시스템을 안내',
-              '편집 메뉴에서 복사와 붙여넣기를 개방하고(잘라내기는 폐기), 되돌리기가 적용되는 범위를 확대',
+              '스테이지를 「도입 4 + 종합 1」 블록 구조로 재편',
+              '스테이지 「Junction.zip」, 「Roundhouse.zip」, 「Defrag」 추가',
+              '도전과제 22종과 블루스크린 연출 추가',
+              '모든 스테이지에 2단계 힌트, 복사·붙여넣기 개방',
             ],
             en: [
-              'Stages restructured into blocks of five (4 introductions + 1 synthesis) — every mechanic you learn is guaranteed to come back',
-              'New synthesis stages "Junction.zip" and "Roundhouse.zip" — mid-boss style puzzles that combine the previous four stages with zero new mechanics',
-              'New stage "Defrag" — a disk defragmentation puzzle',
+              'Stages restructured into blocks of 4 introductions + 1 synthesis',
+              'New stages "Junction.zip", "Roundhouse.zip" and "Defrag"',
               '22 achievements + a blue-screen sequence',
-              'Two-step hints on every stage + a hint-system walkthrough in the tutorial',
-              'Copy/paste opened up in the edit menu (cut removed) + wider undo coverage',
+              'Two-step hints on every stage, copy/paste opened up',
             ],
           },
         },
@@ -427,7 +427,6 @@ const RAW_GAMES: RawGameEntry[] = [
     },
     year: '2026',
     details: {
-      github: 'https://github.com/LeeDnHe/computer-idle-game',
       facts: [
         {
           label: { ko: '장르', en: 'Genre' },
