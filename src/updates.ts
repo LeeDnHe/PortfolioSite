@@ -29,13 +29,13 @@ const RAW_UPDATES: RawUpdate[] = [
     title: { ko: '폴더 탈출, 스토브 인디 부스트랩 진행 & 데모 플레이', en: 'Folder Escape at STOVE Indie Boost Lab & a playable demo' },
     items: {
       ko: [
-        '9월 14일부터 27일까지 스토브 인디 부스트랩에 참여해요',
-        '플레이 버튼이 "데모 플레이"로 바뀌었어요 — 튜토리얼 + 10스테이지 체험판이에요',
+        '9월 14일부터 27일까지 스토브 인디 부스트랩에 참여해요 — 기간 중 스토브 스토어에서 최신 패치 기준 본편 30스테이지를 모두 플레이할 수 있어요 (폴더 탈출 창의 스토브 스토어 버튼)',
+        '플레이 버튼이 "데모 플레이"로 바뀌었어요 — 튜토리얼 + 10스테이지 체험판, 1회차 10~20분이에요',
         '본편은 6블록 30스테이지로 완성됐어요 — v0.10·v0.11 패치노트를 "이전 버전" 탭에 적어 두었어요',
       ],
       en: [
-        'Folder Escape is in STOVE Indie Boost Lab from September 14 to 27',
-        'The play button now says "Play demo" — it’s the tutorial plus a 10-stage trial',
+        'Folder Escape is in STOVE Indie Boost Lab from September 14 to 27 — all 30 stages on the latest patch are playable on the STOVE Store for the duration (see the STOVE Store button in the Folder Escape window)',
+        'The play button now says "Play demo" — the tutorial plus a 10-stage trial, 10–20 min for a first run',
         'The full game reached 30 stages in 6 blocks — the v0.10 and v0.11 patch notes are in the “Previous versions” tab',
       ],
     },

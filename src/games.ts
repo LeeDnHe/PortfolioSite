@@ -52,6 +52,8 @@ export interface GameEntry {
   downloadUrl?: string;
   /** 유튜브 소개·하이라이트 영상 */
   youtube?: { url: string; label: string };
+  /** 스토어 페이지 등 추가 링크 버튼 (유튜브 버튼 뒤에 순서대로) */
+  links?: { url: string; label: string }[];
   year: string;
   /** 없으면 자세히/이전 버전 탭에 준비 중 문구 표시 */
   details?: GameDetails;
@@ -88,6 +90,7 @@ interface RawGameEntry {
   playLabel?: L;
   downloadUrl?: string;
   youtube?: { url: string; label: L };
+  links?: { url: string; label: L }[];
   year: string;
   details?: RawDetails;
 }
@@ -113,6 +116,12 @@ const RAW_GAMES: RawGameEntry[] = [
       url: 'https://www.youtube.com/watch?v=lt40Mul_brk',
       label: { ko: '하이라이트 영상', en: 'Highlight video' },
     },
+    links: [
+      {
+        url: 'https://store.onstove.com/games/105199',
+        label: { ko: '스토브 스토어 — 본편 30스테이지', en: 'STOVE Store — all 30 stages' },
+      },
+    ],
     year: '2026',
     details: {
       facts: [
@@ -139,10 +148,10 @@ const RAW_GAMES: RawGameEntry[] = [
           },
         },
         {
-          label: { ko: '데모', en: 'Demo' },
+          label: { ko: '플레이 방법', en: 'Where to play' },
           value: {
-            ko: '튜토리얼 + 스테이지 1~10 (블록 1~2, 20~30분)',
-            en: 'Tutorial + stages 1–10 (blocks 1–2, 20–30 min)',
+            ko: '스토브 스토어 — 인디 부스트랩 기간(9.14~9.27) 최신 패치 기준 본편 30스테이지 전부 · Steam 데모 — 튜토리얼 + 스테이지 1~10 (1회차 10~20분)',
+            en: 'STOVE Store — every one of the 30 stages on the latest patch during Indie Boost Lab (Sep 14–27) · Steam demo — Tutorial + stages 1–10 (10–20 min first run)',
           },
         },
         {
@@ -254,14 +263,14 @@ const RAW_GAMES: RawGameEntry[] = [
           current: true,
           changes: {
             ko: [
-              '스토브 인디 부스트랩 진행 (9.14 ~ 9.27) — 스토브 PC SDK를 연동해 런처에서 플레이타임이 집계되도록 정비',
-              'Steam 데모 빌드 공개 — 튜토리얼 + 스테이지 1~10 (블록 1~2), 도전과제 11종, 약 20~30분',
+              '스토브 인디 부스트랩 진행 (9.14 ~ 9.27) — 기간 중 스토브 스토어에서 최신 패치 기준 본편 30스테이지를 모두 플레이할 수 있음 (스토브 PC SDK 연동)',
+              'Steam 데모 빌드 공개 — 튜토리얼 + 스테이지 1~10 (블록 1~2), 도전과제 11종, 1회차 10~20분',
               '이 사이트의 플레이 버튼을 "데모 플레이"로 변경 — 본편은 정식 출시 때 다시 열립니다',
               '스테이지 클리어 연출 추가, 블루스크린 복구 버튼, 서브 창의 선택·닫기 버그 수정',
             ],
             en: [
-              'Joining STOVE Indie Boost Lab (Sep 14 – 27) — integrated the STOVE PC SDK so the launcher tracks playtime',
-              'Steam demo build published — Tutorial + stages 1–10 (blocks 1–2), 11 achievements, about 20–30 min',
+              'STOVE Indie Boost Lab (Sep 14 – 27) — all 30 stages on the latest patch are playable on the STOVE Store for the duration (STOVE PC SDK integrated)',
+              'Steam demo build published — Tutorial + stages 1–10 (blocks 1–2), 11 achievements, 10–20 min for a first run',
               'The play button on this site now says "Play demo" — the full game reopens at launch',
               'Stage-clear celebration, a recover button on the blue screen, sub-window selection and close fixes',
             ],
@@ -996,6 +1005,7 @@ export const GAMES: GameEntry[] = RAW_GAMES.map((g) => ({
   playLabel: g.playLabel && s(g.playLabel),
   downloadUrl: g.downloadUrl,
   youtube: g.youtube && { url: g.youtube.url, label: s(g.youtube.label) },
+  links: g.links?.map((l) => ({ url: l.url, label: s(l.label) })),
   year: g.year,
   details: g.details && localizeDetails(g.details),
 }));

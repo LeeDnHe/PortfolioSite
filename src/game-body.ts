@@ -17,6 +17,9 @@ export function buildGameBody(game: GameEntry): string {
   const youtubeBtn = game.youtube
     ? `<a class="btn-link youtube" href="${game.youtube.url}" target="_blank" rel="noreferrer"><span class="yt-glyph">▶</span> ${game.youtube.label} ↗</a>`
     : '';
+  const linkBtns = (game.links ?? [])
+    .map((l) => `<a class="btn-link" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`)
+    .join('');
   const githubBtn = d?.github
     ? `<a class="btn-link" href="${d.github}" target="_blank" rel="noreferrer">GitHub ↗</a>`
     : '';
@@ -43,7 +46,7 @@ export function buildGameBody(game: GameEntry): string {
       </div>
       <p class="desc">${game.description}</p>
       ${factRows ? `<div class="props-rows">${factRows}</div>` : ''}
-      <div class="win-actions">${mainBtn}${youtubeBtn}${githubBtn}</div>
+      <div class="win-actions">${mainBtn}${youtubeBtn}${linkBtns}${githubBtn}</div>
       ${awards}
     </section>`;
 
