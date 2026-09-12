@@ -46,6 +46,8 @@ export interface GameEntry {
   icon: string;
   /** 실제 게임이 배포된 주소. 비어 있으면 "개발 중" 처리 */
   playUrl: string;
+  /** 플레이 버튼 문구 — 없으면 공용 "플레이" 사용 (예: 데모만 공개 중일 때 "데모 플레이") */
+  playLabel?: string;
   /** 모바일 게임 설치 파일 경로(public/ 기준). 있으면 "다운로드" 버튼 표시 */
   downloadUrl?: string;
   /** 유튜브 소개·하이라이트 영상 */
@@ -83,6 +85,7 @@ interface RawGameEntry {
   platform: GamePlatform;
   icon: string;
   playUrl: string;
+  playLabel?: L;
   downloadUrl?: string;
   youtube?: { url: string; label: L };
   year: string;
@@ -105,6 +108,7 @@ const RAW_GAMES: RawGameEntry[] = [
     platform: 'pc',
     icon: folderEscapeIcon,
     playUrl: 'https://folder-escape.netlify.app/',
+    playLabel: { ko: '데모 플레이', en: 'Play demo' },
     youtube: {
       url: 'https://www.youtube.com/watch?v=lt40Mul_brk',
       label: { ko: '하이라이트 영상', en: 'Highlight video' },
@@ -119,8 +123,8 @@ const RAW_GAMES: RawGameEntry[] = [
         {
           label: { ko: '플랫폼', en: 'Platform' },
           value: {
-            ko: 'PC — WebGL (브라우저) / 실행 파일',
-            en: 'PC — WebGL (browser) / standalone build',
+            ko: 'PC — WebGL (브라우저) / 실행 파일 · Steam 데모',
+            en: 'PC — WebGL (browser) / standalone build · Steam demo',
           },
         },
         {
@@ -130,8 +134,15 @@ const RAW_GAMES: RawGameEntry[] = [
         {
           label: { ko: '분량', en: 'Length' },
           value: {
-            ko: '튜토리얼 + 본편 5블록 25개 스테이지 + 다음 블록 씨앗 3개 (60~90분)',
-            en: 'Tutorial + 25 main stages in 5 blocks + 3 seed stages for the next block (60–90 min)',
+            ko: '튜토리얼 + 본편 6블록 30개 스테이지 (60~90분)',
+            en: 'Tutorial + 30 main stages in 6 blocks (60–90 min)',
+          },
+        },
+        {
+          label: { ko: '데모', en: 'Demo' },
+          value: {
+            ko: '튜토리얼 + 스테이지 1~10 (블록 1~2, 20~30분)',
+            en: 'Tutorial + stages 1–10 (blocks 1–2, 20–30 min)',
           },
         },
         {
@@ -148,11 +159,13 @@ const RAW_GAMES: RawGameEntry[] = [
       ],
       awards: {
         ko: [
+          '스토브 인디 부스트랩 참여 (2026.09.14 ~ 09.27)',
           'BIC Festival 2026 루키 부문 — Excellence in Experimental 수상 (2026.08)',
           'BIC Festival 2026 루키 부문 — Excellence in Casual 파이널리스트 (2026.08)',
           'BIC Festival 2026 루키 부문 출품 (2026.06) · 온라인 전시와 현장 전시 (2026.08)',
         ],
         en: [
+          'STOVE Indie Boost Lab participant (Sep 14 – 27, 2026)',
           'BIC Festival 2026, Rookie Division — Excellence in Experimental, WINNER (Aug 2026)',
           'BIC Festival 2026, Rookie Division — Excellence in Casual, FINALIST (Aug 2026)',
           'Submitted to BIC Festival 2026, Rookie Division (Jun 2026) · online and on-site exhibition (Aug 2026)',
@@ -235,10 +248,48 @@ const RAW_GAMES: RawGameEntry[] = [
       },
       versions: [
         {
+          version: 'v0.11',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '스토브 인디 부스트랩 & Steam 데모', en: 'STOVE Indie Boost Lab & Steam demo' },
+          current: true,
+          changes: {
+            ko: [
+              '스토브 인디 부스트랩 진행 (9.14 ~ 9.27) — 스토브 PC SDK를 연동해 런처에서 플레이타임이 집계되도록 정비',
+              'Steam 데모 빌드 공개 — 튜토리얼 + 스테이지 1~10 (블록 1~2), 도전과제 11종, 약 20~30분',
+              '이 사이트의 플레이 버튼을 "데모 플레이"로 변경 — 본편은 정식 출시 때 다시 열립니다',
+              '스테이지 클리어 연출 추가, 블루스크린 복구 버튼, 서브 창의 선택·닫기 버그 수정',
+            ],
+            en: [
+              'Joining STOVE Indie Boost Lab (Sep 14 – 27) — integrated the STOVE PC SDK so the launcher tracks playtime',
+              'Steam demo build published — Tutorial + stages 1–10 (blocks 1–2), 11 achievements, about 20–30 min',
+              'The play button on this site now says "Play demo" — the full game reopens at launch',
+              'Stage-clear celebration, a recover button on the blue screen, sub-window selection and close fixes',
+            ],
+          },
+        },
+        {
+          version: 'v0.10',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '본편 30스테이지 완성', en: 'All 30 main stages complete' },
+          changes: {
+            ko: [
+              '스테이지 「RecycleBin」, 「Scrapyard.zip」 추가 — 블록6 「폐품 처리장」 완성, 6블록 30개 스테이지',
+              '블록5 「쥐덫」과 블록6 「폐품 처리장」 순서 교체 — 쥐덫이 마지막 26~30번, 엔딩은 Mousetrap.zip 뒤로',
+              '휴지통 드래그 삭제·복원 창 추가, 출구를 버리면 열리는 히든 도전과제 「출구 없음」 (도전과제 21종)',
+              '클리어 등급을 일반/퍼펙트/엑스트라 3단계로 정리, 효과음 볼륨 슬라이더 추가',
+            ],
+            en: [
+              'New stages "RecycleBin" and "Scrapyard.zip" — block 6 "Scrapyard" complete, 30 stages in 6 blocks',
+              'Blocks 5 "Mousetrap" and 6 "Scrapyard" swapped — Mousetrap is now the finale (26–30), ending after Mousetrap.zip',
+              'Drag-to-trash and a restore window for the recycle bin, plus the hidden "No Exit" achievement for trashing the exit (21 in total)',
+              'Clear ranks settled at three tiers (normal / perfect / extra), SFX volume slider added',
+            ],
+          },
+        },
+        {
           version: 'v0.9',
           date: { ko: '2026.09', en: 'Sep 2026' },
           title: { ko: '블록5 「쥐덫」 완성 & 클리어 등급', en: 'Block 5 "Mousetrap" complete & clear ranks' },
-          current: true,
           changes: {
             ko: [
               '스테이지 「Mouse」, 「Mousetrap.zip」 추가 — 블록5 「쥐덫」 완성, 전체 28개 스테이지',
@@ -942,6 +993,7 @@ export const GAMES: GameEntry[] = RAW_GAMES.map((g) => ({
   platformLabel: platformLabel(g.platform),
   icon: g.icon,
   playUrl: g.playUrl,
+  playLabel: g.playLabel && s(g.playLabel),
   downloadUrl: g.downloadUrl,
   youtube: g.youtube && { url: g.youtube.url, label: s(g.youtube.label) },
   year: g.year,

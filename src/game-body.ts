@@ -6,7 +6,7 @@ export function buildGameBody(game: GameEntry): string {
   const d = game.details;
   let mainBtn: string;
   if (game.playUrl) {
-    mainBtn = `<a class="btn-play" href="${game.playUrl}" target="_blank" rel="noreferrer">${TX.btnPlay}</a>`;
+    mainBtn = `<a class="btn-play" href="${game.playUrl}" target="_blank" rel="noreferrer">${game.playLabel ?? TX.btnPlay}</a>`;
   } else if (game.downloadUrl) {
     // 설치 파일 종류에 맞는 라벨 — 모바일은 APK, PC는 Windows 압축 파일
     const label = game.platform === 'mobile' ? TX.btnDownload : TX.btnDownloadWin;
