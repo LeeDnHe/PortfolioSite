@@ -33,6 +33,9 @@ export interface GameDetails {
   versions: GameVersionNote[];
 }
 
+/** 링크 버튼 색 — 스토어별 브랜드 색 (없으면 기본 테두리 버튼) */
+export type LinkTone = 'steam' | 'stove';
+
 export interface GameEntry {
   /** 폴더명이자 URL 경로 조각 */
   id: string;
@@ -53,7 +56,7 @@ export interface GameEntry {
   /** 유튜브 소개·하이라이트 영상 */
   youtube?: { url: string; label: string };
   /** 스토어 페이지 등 추가 링크 버튼 (유튜브 버튼 뒤에 순서대로) */
-  links?: { url: string; label: string }[];
+  links?: { url: string; label: string; tone?: LinkTone }[];
   year: string;
   /** 없으면 자세히/이전 버전 탭에 준비 중 문구 표시 */
   details?: GameDetails;
@@ -90,7 +93,7 @@ interface RawGameEntry {
   playLabel?: L;
   downloadUrl?: string;
   youtube?: { url: string; label: L };
-  links?: { url: string; label: L }[];
+  links?: { url: string; label: L; tone?: LinkTone }[];
   year: string;
   details?: RawDetails;
 }
@@ -118,8 +121,14 @@ const RAW_GAMES: RawGameEntry[] = [
     },
     links: [
       {
+        url: 'https://store.steampowered.com/app/5237500/Folder_Escape/',
+        label: { ko: 'Steam 페이지 — 찜하기', en: 'Steam page — Wishlist' },
+        tone: 'steam',
+      },
+      {
         url: 'https://store.onstove.com/games/105199',
-        label: { ko: '스토브 스토어 — 본편 30스테이지', en: 'STOVE Store — all 30 stages' },
+        label: { ko: '스토브 — 본편 30스테이지', en: 'STOVE Store — all 30 stages' },
+        tone: 'stove',
       },
     ],
     year: '2026',
@@ -1005,7 +1014,7 @@ export const GAMES: GameEntry[] = RAW_GAMES.map((g) => ({
   playLabel: g.playLabel && s(g.playLabel),
   downloadUrl: g.downloadUrl,
   youtube: g.youtube && { url: g.youtube.url, label: s(g.youtube.label) },
-  links: g.links?.map((l) => ({ url: l.url, label: s(l.label) })),
+  links: g.links?.map((l) => ({ url: l.url, label: s(l.label), tone: l.tone })),
   year: g.year,
   details: g.details && localizeDetails(g.details),
 }));

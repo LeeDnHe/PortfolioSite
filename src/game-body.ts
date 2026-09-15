@@ -18,7 +18,7 @@ export function buildGameBody(game: GameEntry): string {
     ? `<a class="btn-link youtube" href="${game.youtube.url}" target="_blank" rel="noreferrer"><span class="yt-glyph">▶</span> ${game.youtube.label} ↗</a>`
     : '';
   const linkBtns = (game.links ?? [])
-    .map((l) => `<a class="btn-link" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`)
+    .map((l) => `<a class="btn-link${l.tone ? ` ${l.tone}` : ''}" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`)
     .join('');
   const githubBtn = d?.github
     ? `<a class="btn-link" href="${d.github}" target="_blank" rel="noreferrer">GitHub ↗</a>`

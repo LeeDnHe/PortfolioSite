@@ -224,17 +224,26 @@ body {
   color: #333;
 }
 
+/* 버튼은 2열 그리드 — 폭을 맞춰 줄을 정렬 */
 .win-actions {
   margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 8px;
 }
 
 .btn-play {
-  display: inline-block;
-  padding: 9px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border: 1px solid transparent;
   border-radius: 5px;
   background: #0067c0;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
+  text-align: center;
   text-decoration: none;
 }
 
@@ -394,13 +403,16 @@ body {
 }
 
 .btn-link {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  padding: 9px 14px;
   border: 1px solid #cccccc;
   border-radius: 5px;
   color: #333;
   font-size: 13px;
+  text-align: center;
   text-decoration: none;
 }
 
@@ -408,8 +420,39 @@ body {
   background: #f5f5f5;
 }
 
+/* 브랜드 색 버튼 — 유튜브 빨강, Steam 검정, 스토브 주황 */
+.btn-link.youtube,
+.btn-link.steam,
+.btn-link.stove {
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.btn-link.youtube {
+  background: #e00000;
+}
+
+.btn-link.youtube:hover {
+  background: #ff1a1a;
+}
+
+.btn-link.steam {
+  background: #171a21;
+}
+
+.btn-link.steam:hover {
+  background: #2a2f3a;
+}
+
+.btn-link.stove {
+  background: #ff6a00;
+}
+
+.btn-link.stove:hover {
+  background: #ff8124;
+}
+
 .btn-link.youtube .yt-glyph {
-  color: #ff0000;
   font-size: 11px;
 }
 
@@ -970,19 +1013,13 @@ html.is-touch .props-tab {
 }
 
 html.is-touch .win-actions {
-  display: flex;
-  flex-wrap: wrap;
   gap: 10px;
 }
 
 html.is-touch .btn-play,
 html.is-touch .btn-link {
-  padding: 13px 26px;
+  padding: 13px 16px;
   font-size: 15px;
-}
-
-html.is-touch .btn-link {
-  margin-left: 0;
 }
 
 html.is-touch .btn-ok {
@@ -1289,10 +1326,9 @@ html.is-mobile .m-app .btn-play {
 }
 
 html.is-mobile .m-app .btn-link {
-  margin-left: 0;
   text-align: center;
-  padding: 12px;
-  font-size: 14px;
+  padding: 13px;
+  font-size: 15px;
 }
 
 html.is-mobile .m-app .notepad-body {

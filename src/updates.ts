@@ -24,6 +24,21 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-09-15-folder-escape-steam-page',
+    date: '2026-09-15',
+    title: { ko: '폴더 탈출 Steam 페이지 오픈', en: 'Folder Escape is now on Steam' },
+    items: {
+      ko: [
+        '폴더 탈출의 Steam 스토어 페이지가 열렸어요 — 지금 찜하기를 해 두면 출시 알림을 받을 수 있어요',
+        '폴더 탈출 창에 Steam 페이지 버튼을 추가했어요',
+      ],
+      en: [
+        'Folder Escape’s Steam store page is live — add it to your wishlist to get notified at launch',
+        'The Folder Escape window now has a Steam page button',
+      ],
+    },
+  },
+  {
     id: '2026-09-13-folder-escape-boost-lab',
     date: '2026-09-13',
     title: { ko: '폴더 탈출, 스토브 인디 부스트랩 진행 & 데모 플레이', en: 'Folder Escape at STOVE Indie Boost Lab & a playable demo' },
