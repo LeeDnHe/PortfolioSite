@@ -24,6 +24,23 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-09-18-folder-escape-v013',
+    date: '2026-09-18',
+    title: { ko: '폴더 탈출 v0.12 · v0.13 패치노트', en: 'Folder Escape v0.12 & v0.13 patch notes' },
+    items: {
+      ko: [
+        'v0.12 — 도움말 창에서 새 요소를 직접 보여 주는 시연이 재생되고, 설정에서 조작 키를 바꿀 수 있어요 (펑션키 없는 키보드용 프리셋 포함)',
+        'v0.13 — 부팅·엔딩 크레딧·관리자 권한 연출과 사용자 계정이 생겼어요',
+        '데모도 최신 패치 기준으로 새로 올렸어요 — 자세한 내용은 "이전 버전" 탭에 있어요',
+      ],
+      en: [
+        'v0.12 — the help popup now plays a demo of each new element, and you can remap the controls in settings (with a preset for keyboards without function keys)',
+        'v0.13 — boot, ending-credit and administrator cutscenes, plus user accounts',
+        'The demo has been rebuilt on the latest patch — details are in the “Previous versions” tab',
+      ],
+    },
+  },
+  {
     id: '2026-09-15-folder-escape-steam-page',
     date: '2026-09-15',
     title: { ko: '폴더 탈출 Steam 페이지 오픈', en: 'Folder Escape is now on Steam' },

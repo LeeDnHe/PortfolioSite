@@ -266,10 +266,48 @@ const RAW_GAMES: RawGameEntry[] = [
       },
       versions: [
         {
+          version: 'v0.13',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '부팅·엔딩 연출 & 사용자 계정', en: 'Boot & ending cutscenes, user accounts' },
+          current: true,
+          changes: {
+            ko: [
+              '부팅 콘솔 연출과 엔딩 크레딧 추가 — 엔딩은 모든 스테이지를 클리어한 순간 재생',
+              '전체 퍼펙트 시 관리자 권한 연출 — 적은 이름이 창 제목에 붙고, 엑스트라 클리어가 가능한 스테이지가 표시됨',
+              '설정에 「사용자」 탭 추가 — 이름 변경, 계정 전환, 새 계정 (기록은 계정별 저장)',
+              '데모 빌드를 최신 패치 기준으로 갱신',
+            ],
+            en: [
+              'Boot console sequence and ending credits — the ending plays the moment every stage is cleared',
+              'An administrator cutscene on all-perfect — the name you type goes into the window title, and stages with an extra clear get marked',
+              'New "User" tab in settings — rename, switch or create accounts (progress is saved per account)',
+              'Demo build refreshed to the latest patch',
+            ],
+          },
+        },
+        {
+          version: 'v0.12',
+          date: { ko: '2026.09', en: 'Sep 2026' },
+          title: { ko: '도움말 시연 & 키 설정', en: 'Help demos & key remapping' },
+          changes: {
+            ko: [
+              '도움말 창에 새 요소를 보여 주는 시연 추가 (zip 제외 전 스테이지) — 2차 힌트를 펼치면 정답 쪽 2막 재생',
+              '초반 스테이지의 2차 힌트가 정답을 직접 말하도록 수정',
+              '설정에 「조작」 탭 추가 — 키 10종 재배정, "펑션키 없음" 프리셋, 배경음악·효과음 음소거 분리',
+              '창을 타이틀바 드래그로 이동 가능, Space는 발밑 타일을 먼저 실행',
+            ],
+            en: [
+              'The help popup plays a demo of each stage’s new element (all but the zips) — opening the second hint plays a second act toward the answer',
+              'Second hints in the early stages now state the answer outright',
+              'New "Controls" tab in settings — remap 10 keys, a "no function keys" preset, separate mute for music and SFX',
+              'Dialogs can be dragged by their title bar; Space prefers the tile underfoot',
+            ],
+          },
+        },
+        {
           version: 'v0.11',
           date: { ko: '2026.09', en: 'Sep 2026' },
           title: { ko: '스토브 인디 부스트랩 & Steam 데모', en: 'STOVE Indie Boost Lab & Steam demo' },
-          current: true,
           changes: {
             ko: [
               '스토브 인디 부스트랩 진행 (9.14 ~ 9.27) — 기간 중 스토브 스토어에서 최신 패치 기준 본편 30스테이지를 모두 플레이할 수 있음 (스토브 PC SDK 연동)',
