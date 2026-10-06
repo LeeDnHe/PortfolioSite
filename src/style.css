@@ -233,6 +233,11 @@ body {
   gap: 8px;
 }
 
+/* 버튼 수가 홀수면 마지막 버튼이 한 줄을 다 쓴다 */
+.win-actions > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
 .btn-play {
   display: flex;
   align-items: center;
@@ -420,10 +425,11 @@ body {
   background: #f5f5f5;
 }
 
-/* 브랜드 색 버튼 — 유튜브 빨강, Steam 검정, 스토브 주황 */
+/* 브랜드 색 버튼 — 유튜브 빨강, Steam 검정, 스토브 주황, 디스코드 보라 */
 .btn-link.youtube,
 .btn-link.steam,
-.btn-link.stove {
+.btn-link.stove,
+.btn-link.discord {
   border-color: transparent;
   color: #ffffff;
 }
@@ -450,6 +456,14 @@ body {
 
 .btn-link.stove:hover {
   background: #ff8124;
+}
+
+.btn-link.discord {
+  background: #5865f2;
+}
+
+.btn-link.discord:hover {
+  background: #6f7bf5;
 }
 
 .btn-link.youtube .yt-glyph {

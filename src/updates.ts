@@ -24,6 +24,23 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-10-06-folder-escape-v014-discord',
+    date: '2026-10-06',
+    title: { ko: '폴더 탈출 새 화면 구성 & 디스코드 오픈', en: 'Folder Escape’s new layout & Discord server' },
+    items: {
+      ko: [
+        '폴더 탈출이 진짜 PC 바탕 화면처럼 바뀌었어요 — 작업 표시줄과 시작 메뉴, 바탕 화면 아이콘, 여러 창을 띄워 둔 채 플레이하기',
+        '「화면」 창에서 배율과 다크 테마를 고를 수 있어요 — 데모도 새 화면 구성으로 갱신했어요 (v0.14, "이전 버전" 탭)',
+        '폴더 탈출 디스코드 채널이 열렸어요 — 새 소식, 버그 제보, 피드백은 폴더 탈출 창의 디스코드 버튼으로 들어와 주세요',
+      ],
+      en: [
+        'Folder Escape now looks like a real PC desktop — a taskbar and start menu, desktop icons, and several windows open while you play',
+        'Pick a scale and a dark theme in the new "Display" window — the demo has the new layout too (v0.14, “Previous versions” tab)',
+        'Folder Escape has a Discord server — news, bug reports and feedback all go there; use the Discord button in the Folder Escape window',
+      ],
+    },
+  },
+  {
     id: '2026-09-18-folder-escape-v013',
     date: '2026-09-18',
     title: { ko: '폴더 탈출 v0.12 · v0.13 패치노트', en: 'Folder Escape v0.12 & v0.13 patch notes' },

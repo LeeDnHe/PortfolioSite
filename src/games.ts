@@ -34,7 +34,7 @@ export interface GameDetails {
 }
 
 /** 링크 버튼 색 — 스토어별 브랜드 색 (없으면 기본 테두리 버튼) */
-export type LinkTone = 'steam' | 'stove';
+export type LinkTone = 'steam' | 'stove' | 'discord';
 
 export interface GameEntry {
   /** 폴더명이자 URL 경로 조각 */
@@ -98,6 +98,9 @@ interface RawGameEntry {
   details?: RawDetails;
 }
 
+/** 폴더 탈출 공식 디스코드 초대 링크 */
+const DISCORD_URL = 'https://discord.gg/B7sV9XmGb9';
+
 const RAW_GAMES: RawGameEntry[] = [
   {
     id: 'folder-escape',
@@ -129,6 +132,11 @@ const RAW_GAMES: RawGameEntry[] = [
         url: 'https://store.onstove.com/games/105199',
         label: { ko: '스토브 — 본편 30스테이지', en: 'STOVE Store — all 30 stages' },
         tone: 'stove',
+      },
+      {
+        url: DISCORD_URL,
+        label: { ko: '디스코드 — 커뮤니티 참여', en: 'Discord — join the community' },
+        tone: 'discord',
       },
     ],
     year: '2026',
@@ -266,10 +274,29 @@ const RAW_GAMES: RawGameEntry[] = [
       },
       versions: [
         {
+          version: 'v0.14',
+          date: { ko: '2026.10', en: 'Oct 2026' },
+          title: { ko: '바탕 화면 & 작업 표시줄 — 새 화면 구성', en: 'Desktop & taskbar — a new screen layout' },
+          current: true,
+          changes: {
+            ko: [
+              '화면 아래에 작업 표시줄과 시작 메뉴 추가 — 떠 있는 창마다 칸이 생기고, 게임은 「로그오프」로 종료 (메인 폴더 창은 닫히지 않음)',
+              '도전과제 · 설정 · 언어를 바탕 화면 아이콘으로 이동 — 게임 중에도 열 수 있고, 도움말·메모장·설정 창을 띄운 채로 메인 창 조작 가능',
+              '「화면」 창 추가 — 배율 75~175%·창에 맞춤을 미리보기와 함께 고르고, 라이트/다크 테마 전환 · 작업 표시줄 스피커로 음량 조절',
+              '재시작이 폴더에 막히는 오프닝과 글리치 부팅 연출 추가 — 데모(Steam·웹)도 같은 화면 구성으로 갱신',
+            ],
+            en: [
+              'A taskbar and start menu along the bottom — every open window gets a slot, and you quit with "Log off" (the main folder window refuses to close)',
+              'Achievements, settings and language moved to desktop icons — open them mid-stage, and keep help, Notepad or settings open while you play',
+              'New "Display" window — pick 75–175% scale or fit-to-window with a live preview, switch light/dark theme; tray speaker for volume',
+              'A new opening where the restart is blocked by a folder, plus a glitching boot — the demo (Steam & web) uses the same new layout',
+            ],
+          },
+        },
+        {
           version: 'v0.13',
           date: { ko: '2026.09', en: 'Sep 2026' },
           title: { ko: '부팅·엔딩 연출 & 사용자 계정', en: 'Boot & ending cutscenes, user accounts' },
-          current: true,
           changes: {
             ko: [
               '부팅 콘솔 연출과 엔딩 크레딧 추가 — 엔딩은 모든 스테이지를 클리어한 순간 재생',
