@@ -11,3 +11,7 @@ deno.lock
 # 로컬 개발용 환경변수 (건의함 관리자 키 등) — 커밋하지 않는다
 .env
 .env.*
+
+# Netlify → D1 옮기기 결과 (건의함 글 포함) — 커밋하지 않는다
+server/migrate.sql
+.wrangler
