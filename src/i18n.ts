@@ -123,6 +123,9 @@ const KO = {
   menuGuestbook: '건의함',
   menuEmail: '이메일 보내기',
 
+  nfTitle: '페이지를 찾을 수 없습니다',
+  nfHome: '바탕화면으로 돌아가기',
+
   mHome: '홈으로',
   mAbout: '소개',
   mMail: '메일',
@@ -268,6 +271,9 @@ const EN: typeof KO = {
   menuUpdates: "What's new",
   menuGuestbook: 'Suggestion box',
   menuEmail: 'Send email',
+
+  nfTitle: 'Page not found',
+  nfHome: 'Back to the desktop',
 
   mHome: 'Home',
   mAbout: 'About',

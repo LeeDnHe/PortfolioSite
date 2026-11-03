@@ -22,7 +22,11 @@ if (touchFirst || navigator.maxTouchPoints > 0) {
   document.documentElement.classList.add('is-touch');
 }
 
-if (isMobile) {
+// 루트 밖의 주소(없는 경로는 Netlify 가 404.html = index.html 을 준다)는 route.ts 가 맡는다
+const path = location.pathname.replace(/^\/+|\/+$/g, '');
+if (path && path !== 'index.html') {
+  void import('./route.ts').then((m) => m.openRoute(path));
+} else if (isMobile) {
   void import('./mobile.ts');
 } else {
   void import('./desktop.ts');

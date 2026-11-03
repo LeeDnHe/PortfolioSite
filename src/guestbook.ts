@@ -261,10 +261,24 @@ function wireForm(box: HTMLElement): void {
 
   const submit = async () => {
     const text = input.value.trim();
-    if (sending || text.length < MIN_LEN || Date.now() < cooldownUntil) return;
+    if (sending || text.length < MIN_LEN) return;
     sending = true;
     showMsg('', 'ok');
     refresh();
+    // 정해진 글에는 서버로 보내지 않고 이 자리에서 자동 응답을 보여 준다 (응답은 route-data.json 에 암호화)
+    const reply = await import('./route.ts').then((m) => m.autoReply(text)).catch(() => null);
+    if (reply) {
+      sending = false;
+      input.value = '';
+      showMsg(reply.join('\n'), 'ok');
+      refresh();
+      return;
+    }
+    if (Date.now() < cooldownUntil) {
+      sending = false;
+      refresh();
+      return;
+    }
     try {
       const res = await fetch(API, {
         method: 'POST',

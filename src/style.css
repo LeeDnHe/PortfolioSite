@@ -2289,6 +2289,7 @@ html.is-mobile body.minigame-active .m-dock {
   font-size: 12.5px;
   line-height: 1.6;
   color: #0067c0;
+  white-space: pre-line;
 }
 
 .gb-msg:empty {
