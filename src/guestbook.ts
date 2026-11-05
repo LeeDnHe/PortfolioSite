@@ -192,6 +192,8 @@ function wireForm(box: HTMLElement): void {
   let cooldownUntil = storedCooldown();
   let sending = false;
   let ticker = 0;
+  /** 대화형 자동 응답이 열려 있는 동안의 상대 (route.ts openTalk) */
+  let talk: import('./route.ts').Talk | null = null;
 
   const showMsg = (text: string, kind: 'ok' | 'error') => {
     msg.textContent = text;
@@ -265,12 +267,32 @@ function wireForm(box: HTMLElement): void {
     sending = true;
     showMsg('', 'ok');
     refresh();
+    // 대화형 자동 응답이 열려 있으면 서버 대신 그쪽이 받는다
+    if (talk) {
+      const res = await talk.answer(text).catch(() => null);
+      sending = false;
+      input.value = '';
+      if (!res || res.done) talk = null;
+      showMsg(res ? res.lines.join('\n') : '', 'ok');
+      refresh();
+      return;
+    }
     // 정해진 글에는 서버로 보내지 않고 이 자리에서 자동 응답을 보여 준다 (응답은 route-data.json 에 암호화)
-    const reply = await import('./route.ts').then((m) => m.autoReply(text)).catch(() => null);
+    const route = await import('./route.ts').catch(() => null);
+    const reply = route ? await route.autoReply(text).catch(() => null) : null;
     if (reply) {
       sending = false;
       input.value = '';
       showMsg(reply.join('\n'), 'ok');
+      refresh();
+      return;
+    }
+    const opened = route ? await route.openTalk(text).catch(() => null) : null;
+    if (opened) {
+      talk = opened;
+      sending = false;
+      input.value = '';
+      showMsg(talk.start(lang).join('\n'), 'ok');
       refresh();
       return;
     }

@@ -61,6 +61,27 @@ export async function autoReply(text: string): Promise<string[] | null> {
   return reply[lang];
 }
 
+/** 건의함 대화형 자동 응답 — 정해진 글로 열리는 대화 상대. 열린 뒤에는 보내는 글이 서버 대신 이쪽으로 간다 */
+export interface Talk {
+  start(l: 'ko' | 'en'): string[];
+  answer(text: string): Promise<{ lines: string[]; done: boolean }>;
+}
+
+/** 정해진 글이면 대화 상대를, 아니면 null */
+export async function openTalk(text: string): Promise<Talk | null> {
+  for (const box of (data as { c?: Sealed[] }).c ?? []) {
+    const code = await unseal(text, box);
+    if (!code) continue;
+    const url = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+    try {
+      return (await import(/* @vite-ignore */ url)) as Talk;
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+  return null;
+}
+
 interface PageModule {
   mount(root: HTMLElement): void;
   setLang?(l: 'ko' | 'en'): void;
