@@ -85,7 +85,7 @@ const KO = {
   /* --- 건의함 --- */
   gbTitle: '건의함',
   gbLead:
-    '이 사이트와 게임에 대한 의견을 자유롭게 남겨 주세요.<br>글은 개발자에게만 전달되고, 다른 방문자에게는 보이지 않아요.',
+    '이 사이트와 게임에 대한 의견을 자유롭게 남겨 주세요.<br>글은 SYSTEM 이 받아 개발자에게 전달하고, 다른 방문자에게는 보이지 않아요.',
   gbPlaceholder: '좋았던 점, 아쉬운 점, 바라는 점 무엇이든 좋아요',
   gbSend: '보내기',
   gbSending: '보내는 중…',
@@ -234,7 +234,7 @@ const EN: typeof KO = {
   /* --- Suggestion box --- */
   gbTitle: 'Suggestion box',
   gbLead:
-    'Tell me anything about this site and the games.<br>Only I get to read it — nothing you send is shown to other visitors.',
+    'Tell me anything about this site and the games.<br>SYSTEM receives it and passes it on to me. Nothing you send is shown to other visitors.',
   gbPlaceholder: 'What you liked, what fell flat, what you wish existed',
   gbSend: 'Send',
   gbSending: 'Sending…',
