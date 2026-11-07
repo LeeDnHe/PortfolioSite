@@ -119,8 +119,8 @@ const RAW_GAMES: RawGameEntry[] = [
     playUrl: 'https://folder-escape.netlify.app/',
     playLabel: { ko: '데모 플레이', en: 'Play demo' },
     youtube: {
-      url: 'https://www.youtube.com/watch?v=lt40Mul_brk',
-      label: { ko: '하이라이트 영상', en: 'Highlight video' },
+      url: 'https://www.youtube.com/watch?v=4zfcpgZpIlg',
+      label: { ko: '트레일러', en: 'Trailer' },
     },
     links: [
       {

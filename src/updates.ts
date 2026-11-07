@@ -24,6 +24,21 @@ interface RawUpdate {
 /** 최신순 */
 const RAW_UPDATES: RawUpdate[] = [
   {
+    id: '2026-11-07-folder-escape-trailer',
+    date: '2026-11-07',
+    title: { ko: '폴더 탈출 트레일러 공개', en: 'Folder Escape trailer is out' },
+    items: {
+      ko: [
+        '폴더 탈출 트레일러를 유튜브에 새로 올렸어요. 폴더 탈출 창의 「트레일러」 버튼을 누르면 바로 볼 수 있어요',
+        '예전 하이라이트 영상이 있던 자리는 새 트레일러로 바꿨어요',
+      ],
+      en: [
+        'A new Folder Escape trailer is up on YouTube. Open it with the “Trailer” button in the Folder Escape window',
+        'The trailer replaces the old highlight video',
+      ],
+    },
+  },
+  {
     id: '2026-10-06-folder-escape-v014-discord',
     date: '2026-10-06',
     title: { ko: '폴더 탈출 새 화면 구성 & 디스코드 오픈', en: 'Folder Escape’s new layout & Discord server' },
