@@ -53,31 +53,15 @@ export async function unseal(secret: string, box: Sealed): Promise<string | null
   }
 }
 
-/** 건의함 자동 응답 — 정해진 글이면 응답 줄들을, 아니면 null */
+/** 건의함 자동 응답 — 정해진 글이면 응답 줄들을, 아니면 null.
+ *  상자마다 여는 글이 다르다 (2단계 반응, 13단계 편지). 예전 데이터처럼 상자가 하나여도 연다 */
 export async function autoReply(text: string): Promise<string[] | null> {
-  const pt = await unseal(text, data.a);
-  if (!pt) return null;
-  const reply = JSON.parse(pt) as { ko: string[]; en: string[] };
-  return reply[lang];
-}
-
-/** 건의함 대화형 자동 응답 — 정해진 글로 열리는 대화 상대. 열린 뒤에는 보내는 글이 서버 대신 이쪽으로 간다 */
-export interface Talk {
-  start(l: 'ko' | 'en'): string[];
-  answer(text: string): Promise<{ lines: string[]; done: boolean }>;
-}
-
-/** 정해진 글이면 대화 상대를, 아니면 null */
-export async function openTalk(text: string): Promise<Talk | null> {
-  for (const box of (data as { c?: Sealed[] }).c ?? []) {
-    const code = await unseal(text, box);
-    if (!code) continue;
-    const url = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
-    try {
-      return (await import(/* @vite-ignore */ url)) as Talk;
-    } finally {
-      URL.revokeObjectURL(url);
-    }
+  const a = (data as { a: Sealed | Sealed[] }).a;
+  for (const box of Array.isArray(a) ? a : [a]) {
+    const pt = await unseal(text, box);
+    if (!pt) continue;
+    const reply = JSON.parse(pt) as { ko: string[]; en: string[] };
+    return reply[lang];
   }
   return null;
 }
